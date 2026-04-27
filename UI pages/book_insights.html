@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Book Insights - The Midnight Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;900&amp;family=IBM+Plex+Mono:wght@400;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#FFFFFF",
+                        "on-tertiary-container": "#ffd2be",
+                        "error-text": "#9F1239",
+                        "on-tertiary-fixed": "#351000",
+                        "surface-bright": "#fcf8ff",
+                        "primary-subtle": "#EEF2FF",
+                        "tertiary-fixed": "#ffdbcc",
+                        "success-subtle": "#D1FAE5",
+                        "primary-muted": "#C7D2FE",
+                        "surface-container-lowest": "#ffffff",
+                        "success": "#10B981",
+                        "warning-subtle": "#FEF3C7",
+                        "text-faint": "#94A3B8",
+                        "chart-1": "#4F46E5",
+                        "secondary-container": "#6cf8bb",
+                        "surface-container-highest": "#e4e1ee",
+                        "surface-container-low": "#f5f2ff",
+                        "on-primary": "#ffffff",
+                        "chart-4": "#8B5CF6",
+                        "error-container": "#ffdad6",
+                        "border-strong": "#CBD5E1",
+                        "text-secondary": "#334155",
+                        "chart-3": "#F59E0B",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "on-background": "#1b1b24",
+                        "secondary-fixed": "#6ffbbe",
+                        "text-muted": "#64748B",
+                        "tertiary": "#7e3000",
+                        "secondary-fixed-dim": "#4edea3",
+                        "chart-5": "#EC4899",
+                        "surface-dim": "#dcd8e5",
+                        "primary-container": "#4f46e5",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "tertiary-container": "#a44100",
+                        "surface-tint": "#4d44e3",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#302f39",
+                        "surface-raised": "#F1F5F9",
+                        "on-secondary": "#ffffff",
+                        "border": "#E2E8F0",
+                        "on-primary-fixed": "#0f0069",
+                        "primary-hover": "#4338CA",
+                        "on-secondary-fixed-variant": "#005236",
+                        "inverse-primary": "#c3c0ff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "text-primary": "#0F172A",
+                        "on-secondary-container": "#00714d",
+                        "secondary": "#006c49",
+                        "canvas": "#F8FAFC",
+                        "surface-variant": "#e4e1ee",
+                        "surface-container-high": "#eae6f4",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#3525cd",
+                        "warning": "#F59E0B",
+                        "on-secondary-fixed": "#002113",
+                        "outline": "#777587",
+                        "background": "#fcf8ff",
+                        "success-text": "#065F46",
+                        "error-subtle": "#FFE4E6",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#dad7ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "surface-container": "#f0ecf9",
+                        "chart-2": "#10B981",
+                        "warning-text": "#78350F",
+                        "on-surface-variant": "#464555",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-on-surface": "#f3effc",
+                        "outline-variant": "#c7c4d8",
+                        "on-surface": "#1b1b24",
+                        "error": "#F43F5E"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "compact": "16px",
+                        "page": "32px",
+                        "nav-y": "10px",
+                        "base": "4px",
+                        "grid-gap": "20px",
+                        "nav-x": "12px",
+                        "inline": "8px",
+                        "card": "24px"
+                    },
+                    "fontFamily": {
+                        "display": ["'IBM Plex Sans'", "Inter"],
+                        "body-strong": ["'IBM Plex Sans'", "Inter"],
+                        "kpi-value": ["'IBM Plex Mono'", "Monospace"],
+                        "body": ["'IBM Plex Sans'", "Inter"],
+                        "card-title": ["'IBM Plex Sans'", "Inter"],
+                        "mono-hint": ["'IBM Plex Mono'", "Monospace"],
+                        "caption": ["'IBM Plex Sans'", "Inter"],
+                        "nav-label": ["'IBM Plex Sans'", "Inter"],
+                        "heading-section": ["'IBM Plex Sans'", "Inter"]
+                    },
+                    "fontSize": {
+                        "display": ["28px", { "lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "body-strong": ["14px", { "lineHeight": "1.6", "fontWeight": "500" }],
+                        "kpi-value": ["32px", { "lineHeight": "1.0", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "body": ["14px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "card-title": ["15px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-hint": ["11px", { "lineHeight": "1.0", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "nav-label": ["13px", { "lineHeight": "1.0", "fontWeight": "500" }],
+                        "heading-section": ["20px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .nav-item-active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            bottom: 6px;
+            width: 3px;
+            background: #4F46E5;
+            border-radius: 0 2px 2px 0;
+        }
+    </style>
+</head>
+<body class="bg-canvas text-on-surface min-h-screen font-body text-body selection:bg-primary-subtle selection:text-primary-container flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full w-[250px] border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-50 hidden md:flex flex-col py-6 gap-2">
+<div class="mb-6 px-6 flex items-center gap-2.5">
+<div class="w-7 h-7 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[18px]">sparkles</span>
+</div>
+<div>
+<h1 class="text-[17px] font-bold tracking-tight text-slate-900 dark:text-white leading-none">PubIntel</h1>
+<p class="text-[10px] font-semibold tracking-widest text-slate-400 uppercase mt-1">Editorial Analytics</p>
+</div>
+</div>
+<div class="flex-1 px-3 space-y-0.5">
+<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px] stroke-[1.75]">dashboard</span>
+            Dashboard
+        </a>
+<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium bg-indigo-50 dark:bg-slate-800/50 text-indigo-600 dark:text-indigo-400 nav-item-active active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px] stroke-[1.75]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+            Book Insights
+        </a>
+<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px] stroke-[1.75]">analytics</span>
+            Genre Analysis
+        </a>
+<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-150 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[18px] stroke-[1.75]">trending_up</span>
+            Market Trends
+        </a>
+</div>
+<div class="mt-auto border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
+<div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xs shrink-0">SC</div>
+<div class="flex-1 min-w-0">
+<p class="text-[13px] font-medium text-slate-900 dark:text-white leading-tight truncate">Sarah Chen</p>
+<span class="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 tracking-wide">PRO PLAN</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-[250px] min-h-screen pb-page">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-250px)] h-16 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-8">
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-['IBM_Plex_Sans'] text-sm tracking-tight text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 pb-[22px] pt-6 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500/20 font-semibold" href="#">Overview</a>
+<a class="font-['IBM_Plex_Sans'] text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors pb-[22px] pt-6 focus:ring-2 focus:ring-indigo-500/20" href="#">Demographics</a>
+<a class="font-['IBM_Plex_Sans'] text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors pb-[22px] pt-6 focus:ring-2 focus:ring-indigo-500/20" href="#">Sentiment</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-faint text-[18px]">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-slate-50 border border-transparent rounded-lg text-sm focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all w-64 font-body placeholder:text-text-faint outline-none" placeholder="Search insights... (⌘K)" type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<button class="ml-2 bg-indigo-600 text-white px-4 py-1.5 rounded-lg font-body-strong text-body-strong hover:bg-indigo-700 transition-colors shadow-sm hidden sm:block">
+                        Export Report
+                    </button>
+</div>
+</div>
+</header>
+<!-- Page Content Canvas -->
+<div class="pt-24 px-page max-w-[1280px] mx-auto">
+<!-- Breadcrumb & Header -->
+<div class="mb-8">
+<a class="flex items-center gap-1 text-text-muted hover:text-text-primary transition-colors font-body text-xs mb-4 w-max group" href="#">
+<span class="material-symbols-outlined text-[14px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+                    Back to Dashboard
+                </a>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-secondary font-caption text-[11px] font-medium uppercase tracking-wider">Sci-Fi / Contemporary</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-secondary font-caption text-[11px] font-medium tracking-wider">Pub: Aug 2020</span>
+</div>
+<h1 class="font-display text-2xl font-bold tracking-tight text-text-primary mb-1">The Midnight Library</h1>
+<p class="font-body-strong text-sm font-medium text-text-secondary">by Matt Haig</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface text-text-primary border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm font-body-strong text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+                            Compare
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-body-strong text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Track Book
+                        </button>
+</div>
+</div>
+</div>
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-grid-gap mb-8">
+<!-- KPI 1: Rating -->
+<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm hover:-translate-y-[1px] transition-all">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-card-title text-[15px] font-semibold text-text-secondary">Reader Rating</h3>
+<span class="flex items-center gap-1 text-success font-body-strong text-[12px] bg-success-subtle px-2 py-0.5 rounded-full font-medium">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+                            +5%
+                        </span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="font-kpi-value text-4xl font-bold tracking-tight text-text-primary">4.2</span>
+<span class="text-text-muted font-body-strong text-lg text-slate-400">/ 5.0</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex text-warning">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]">star_half</span>
+</div>
+<span class="text-text-muted font-caption text-xs">14,302 reviews</span>
+</div>
+</div>
+<!-- KPI 2: Engagement -->
+<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm hover:-translate-y-[1px] transition-all">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-card-title text-[15px] font-semibold text-text-secondary">Engagement Depth</h3>
+<span class="material-symbols-outlined text-text-muted text-[20px]">menu_book</span>
+</div>
+<div class="flex items-baseline gap-2 mb-3">
+<span class="font-kpi-value text-4xl font-bold tracking-tight text-text-primary">84%</span>
+<span class="text-text-muted font-body-strong text-lg text-slate-400">completion</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
+<div class="bg-emerald-500 h-2 rounded-full w-[84%]"></div>
+</div>
+<p class="text-success-text font-caption text-xs flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        High reader retention
+                    </p>
+</div>
+<!-- KPI 3: Viral Potential -->
+<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm hover:-translate-y-[1px] transition-all">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-card-title text-[15px] font-semibold text-text-secondary">Viral Potential</h3>
+<span class="px-2 py-0.5 rounded-full bg-success-subtle text-success-text text-[10px] font-bold tracking-widest uppercase">HIGH</span>
+</div>
+<div class="flex items-baseline gap-2 mb-3">
+<span class="font-kpi-value text-4xl font-bold tracking-tight text-text-primary">92</span>
+<span class="text-text-muted font-body-strong text-lg text-slate-400">/ 100</span>
+</div>
+<p class="text-text-muted font-caption text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">share</span>
+                        Strong social mention context
+                    </p>
+</div>
+</div>
+<!-- Analytics Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-grid-gap mb-8">
+<!-- Sentiment Distribution -->
+<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm">
+<h3 class="font-heading-section text-xl font-semibold tracking-tight text-text-primary mb-6">Sentiment Distribution</h3>
+<div class="space-y-4">
+<!-- Positive -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-strong text-sm font-medium text-text-secondary flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-emerald-500"></div> Positive
+                                </span>
+<span class="font-body-strong text-sm font-semibold text-text-primary">65%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-emerald-500 h-2 rounded-full w-[65%]"></div>
+</div>
+</div>
+<!-- Neutral -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-strong text-sm font-medium text-text-secondary flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-slate-400"></div> Neutral
+                                </span>
+<span class="font-body-strong text-sm font-semibold text-text-primary">20%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-slate-400 h-2 rounded-full w-[20%]"></div>
+</div>
+</div>
+<!-- Negative -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<span class="font-body-strong text-sm font-medium text-text-secondary flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-rose-500"></div> Negative
+                                </span>
+<span class="font-body-strong text-sm font-semibold text-text-primary">15%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-rose-500 h-2 rounded-full w-[15%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Reviewer Focus -->
+<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm">
+<h3 class="font-heading-section text-xl font-semibold tracking-tight text-text-primary mb-6">Reviewer Focus</h3>
+<div class="space-y-3">
+<!-- Radar Chart -->
+<div class="flex justify-center mb-6">
+<svg class="overflow-visible" height="240" viewbox="0 0 200 200" width="240">
+<!-- Labels -->
+<text class="text-[10px] font-medium fill-slate-500" text-anchor="middle" x="100" y="10">Characters</text>
+<text class="text-[10px] font-medium fill-slate-500" text-anchor="start" x="185" y="80">Pacing</text>
+<text class="text-[10px] font-medium fill-slate-500" text-anchor="start" x="150" y="175">Plot</text>
+<text class="text-[10px] font-medium fill-slate-500" text-anchor="end" x="50" y="175">World-building</text>
+<text class="text-[10px] font-medium fill-slate-500" text-anchor="end" x="15" y="80">Writing Style</text>
+<!-- Grid Lines (Pentagons) -->
+<polygon fill="none" points="100,20 176.1,75.3 147.0,164.7 53.0,164.7 23.9,75.3" stroke="#F1F5F9" stroke-width="1"></polygon>
+<polygon fill="none" points="100,40 157.1,81.5 135.3,148.5 64.7,148.5 42.9,81.5" stroke="#F1F5F9" stroke-width="1"></polygon>
+<polygon fill="none" points="100,60 138.0,87.6 123.5,132.4 76.5,132.4 62.0,87.6" stroke="#F1F5F9" stroke-width="1"></polygon>
+<polygon fill="none" points="100,80 119.0,93.8 111.8,116.2 88.2,116.2 81.0,93.8" stroke="#F1F5F9" stroke-width="1"></polygon>
+<!-- Axis Lines -->
+<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="100" y1="100" y2="20"></line>
+<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="176.1" y1="100" y2="75.3"></line>
+<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="147.0" y1="100" y2="164.7"></line>
+<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="53.0" y1="100" y2="164.7"></line>
+<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="23.9" y1="100" y2="75.3"></line>
+<!-- Data Polygon -->
+<polygon fill="#4f46e5" fill-opacity="0.12" points="100,29.6 141.1,86.7 138.6,153.1 85.4,120.1 39.9,80.5" stroke="#4f46e5" stroke-width="2"></polygon>
+<!-- Data Points -->
+<circle cx="100" cy="29.6" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
+<circle cx="141.1" cy="86.7" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
+<circle cx="138.6" cy="153.1" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
+<circle cx="85.4" cy="120.1" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
+<circle cx="39.9" cy="80.5" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
+</svg>
+</div>
+<!-- Dimension Rows -->
+<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body text-sm text-text-secondary font-medium">Characters</span>
+<div class="flex items-center gap-3">
+<span class="font-body text-xs text-text-primary font-semibold">88</span>
+<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-medium tracking-wide w-16 text-center">HIGH</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 88%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body text-sm text-text-secondary font-medium">Pacing</span>
+<div class="flex items-center gap-3">
+<span class="font-body text-xs text-text-primary font-semibold">54</span>
+<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-medium tracking-wide w-16 text-center">MEDIUM</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 54%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body text-sm text-text-secondary font-medium">Plot</span>
+<div class="flex items-center gap-3">
+<span class="font-body text-xs text-text-primary font-semibold">82</span>
+<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-medium tracking-wide w-16 text-center">HIGH</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 82%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body text-sm text-text-secondary font-medium">World-building</span>
+<div class="flex items-center gap-3">
+<span class="font-body text-xs text-text-primary font-semibold">31</span>
+<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[11px] font-medium tracking-wide w-16 text-center">LOW</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 31%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body text-sm text-text-secondary font-medium">Writing Style</span>
+<div class="flex items-center gap-3">
+<span class="font-body text-xs text-text-primary font-semibold">79</span>
+<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-medium tracking-wide w-16 text-center">HIGH</span>
+</div>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 79%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Narrative & Trope Insights -->
+<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm mb-8">
+<h3 class="font-heading-section text-xl font-semibold tracking-tight text-text-primary mb-4">Narrative &amp; Trope Insights</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="font-body text-xs font-medium text-emerald-800">Alternate Reality</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="font-body text-xs font-medium text-emerald-800">Regret</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full">
+<div class="w-2 h-2 rounded-full bg-slate-400"></div>
+<span class="font-body text-xs font-medium text-slate-700">Mental Health</span>
+</div>
+</div>
+<h4 class="font-card-title text-[13px] font-semibold text-text-primary mb-3">Key Reader Takeaways</h4>
+<ul class="space-y-3">
+<li class="flex items-start gap-3 text-text-secondary font-body text-sm leading-relaxed">
+<div class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0"></div>
+                        Readers highly resonate with the philosophical exploration of choices and parallel lives.
+                    </li>
+<li class="flex items-start gap-3 text-text-secondary font-body text-sm leading-relaxed">
+<div class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0"></div>
+                        The protagonist's emotional journey is frequently cited as relatable and deeply moving.
+                    </li>
+</ul>
+</div>
+</div>
+</main>
+</body></html>

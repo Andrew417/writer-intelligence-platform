@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PubIntel Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-raised": "#F1F5F9",
+                        "on-secondary-container": "#00714d",
+                        "canvas": "#F8FAFC",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary-container": "#4f46e5",
+                        "text-primary": "#0F172A",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-hover": "#4338CA",
+                        "chart-1": "#4F46E5",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "on-secondary-fixed": "#002113",
+                        "inverse-primary": "#c3c0ff",
+                        "primary-fixed": "#e2dfff",
+                        "surface-container": "#f0ecf9",
+                        "on-surface-variant": "#464555",
+                        "secondary-fixed": "#6ffbbe",
+                        "warning-text": "#78350F",
+                        "primary-muted": "#C7D2FE",
+                        "outline-variant": "#c7c4d8",
+                        "error": "#F43F5E",
+                        "on-primary-container": "#dad7ff",
+                        "surface-container-low": "#f5f2ff",
+                        "border-strong": "#CBD5E1",
+                        "error-text": "#9F1239",
+                        "outline": "#777587",
+                        "on-tertiary-container": "#ffd2be",
+                        "surface-tint": "#4d44e3",
+                        "on-tertiary-fixed": "#351000",
+                        "tertiary-fixed": "#ffdbcc",
+                        "chart-5": "#EC4899",
+                        "on-secondary-fixed-variant": "#005236",
+                        "primary-subtle": "#EEF2FF",
+                        "text-faint": "#94A3B8",
+                        "primary": "#4F46E5",
+                        "on-primary": "#ffffff",
+                        "error-subtle": "#FFE4E6",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "tertiary": "#7e3000",
+                        "on-surface": "#1b1b24",
+                        "tertiary-container": "#a44100",
+                        "border": "#E2E8F0",
+                        "surface-variant": "#e4e1ee",
+                        "secondary": "#006c49",
+                        "text-secondary": "#334155",
+                        "text-muted": "#64748B",
+                        "warning": "#F59E0B",
+                        "surface-container-high": "#eae6f4",
+                        "success": "#10B981",
+                        "warning-subtle": "#FEF3C7",
+                        "background": "#F8FAFC",
+                        "surface-dim": "#dcd8e5",
+                        "surface-container-highest": "#e4e1ee",
+                        "surface-bright": "#fcf8ff",
+                        "error-container": "#ffdad6",
+                        "chart-3": "#F59E0B",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "chart-4": "#8B5CF6",
+                        "secondary-container": "#6cf8bb",
+                        "surface": "#FFFFFF",
+                        "success-text": "#065F46",
+                        "on-primary-fixed": "#0f0069",
+                        "inverse-surface": "#302f39",
+                        "success-subtle": "#D1FAE5",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f3effc",
+                        "on-error-container": "#93000a",
+                        "chart-2": "#10B981",
+                        "on-background": "#1b1b24"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gap": "20px",
+                        "base": "4px",
+                        "card": "24px",
+                        "compact": "16px",
+                        "nav-x": "12px",
+                        "inline": "8px",
+                        "page": "32px",
+                        "nav-y": "10px"
+                    },
+                    "fontFamily": {
+                        "card-title": ["IBM Plex Sans"],
+                        "body-strong": ["IBM Plex Sans"],
+                        "heading-section": ["IBM Plex Sans"],
+                        "display": ["IBM Plex Sans"],
+                        "kpi-value": ["IBM Plex Mono"],
+                        "mono-hint": ["IBM Plex Mono"],
+                        "caption": ["IBM Plex Sans"],
+                        "body": ["IBM Plex Sans"],
+                        "nav-label": ["IBM Plex Sans"]
+                    },
+                    "fontSize": {
+                        "card-title": ["15px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-strong": ["14px", { "lineHeight": "1.6", "fontWeight": "500" }],
+                        "heading-section": ["20px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display": ["28px", { "lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "kpi-value": ["32px", { "lineHeight": "1.0", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "mono-hint": ["11px", { "lineHeight": "1.0", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "body": ["14px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "nav-label": ["13px", { "lineHeight": "1.0", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas text-text-primary font-body flex min-h-screen">
+<!-- SideNavBar Component (Consistent with Design Specs) -->
+<nav class="fixed left-0 top-0 h-full w-[250px] border-r border-border bg-surface flex flex-col z-50">
+<!-- Logo Area -->
+<div class="flex items-center gap-3 p-5 border-b border-surface-raised mb-4">
+<div class="w-7 h-7 bg-gradient-to-br from-indigo-600 to-primary-hover rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[18px]">sparkles</span>
+</div>
+<span class="text-[17px] font-bold tracking-tight text-text-primary">PubIntel</span>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex-1 px-3 space-y-0.5">
+<p class="text-[10px] font-semibold tracking-widest text-text-muted uppercase px-3 py-2 mb-1">Analytics</p>
+<!-- Active Tab -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-primary-subtle text-primary border-r-[3px] border-primary font-medium text-[13px] rounded-r-none transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+                Dashboard
+            </a>
+<!-- Inactive Tabs -->
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:bg-canvas hover:text-text-primary transition-all font-medium text-[13px] rounded-lg" href="#">
+<span class="material-symbols-outlined text-[18px]">book_open</span>
+                Book Insights
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:bg-canvas hover:text-text-primary transition-all font-medium text-[13px] rounded-lg" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+                Genre Analysis
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:bg-canvas hover:text-text-primary transition-all font-medium text-[13px] rounded-lg" href="#">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+                Market Trends
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-text-muted hover:bg-canvas hover:text-text-primary transition-all font-medium text-[13px] rounded-lg" href="#">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+                Saved Reports
+            </a>
+</div>
+<!-- User Profile Section (Sidebar Bottom) -->
+<div class="mt-auto border-t border-surface-raised p-4">
+<div class="flex items-center gap-3 cursor-pointer hover:bg-canvas p-1 rounded-lg transition-colors">
+<div class="w-8 h-8 rounded-full bg-primary-subtle text-primary font-semibold text-[12px] flex items-center justify-center shrink-0">
+                    SC
+                </div>
+<div class="flex-1 min-w-0">
+<p class="text-[13px] font-medium text-text-primary leading-tight truncate">Sarah Chen</p>
+<span class="text-[10px] font-semibold text-success-text bg-success-subtle px-2 py-0.5 rounded-full inline-block mt-0.5 tracking-tight">Pro Plan</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<main class="flex-1 ml-[250px] flex flex-col min-h-screen">
+<!-- TopNavBar Component (Glassmorphism Styled) -->
+<header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-border h-16 w-full flex items-center justify-between px-8 shadow-sm">
+<!-- Search Bar -->
+<div class="flex-1 max-w-md relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px]">search</span>
+<input class="w-full bg-canvas border border-border rounded-lg pl-10 pr-12 py-2 text-[13px] font-body text-text-primary focus:ring-2 focus:ring-primary/10 focus:border-primary/50 focus:bg-white transition-all placeholder:text-text-muted outline-none" placeholder="Search titles, authors, genres..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 border border-border-strong rounded px-1.5 py-0.5 bg-white">
+<span class="font-mono-hint text-mono-hint text-text-muted">⌘K</span>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 flex items-center justify-center text-text-muted hover:bg-surface-raised hover:text-text-primary rounded-lg transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-1.5 h-1.5 bg-error rounded-full border border-white"></span>
+</button>
+<button class="w-9 h-9 flex items-center justify-center text-text-muted hover:bg-surface-raised hover:text-text-primary rounded-lg transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<button class="text-[13px] font-medium text-text-secondary border border-border bg-white hover:bg-canvas hover:border-border-strong px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                    Export <span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-page max-w-[1280px] mx-auto w-full flex flex-col gap-grid-gap">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-4">
+<div>
+<h2 class="font-display text-[26px] font-bold tracking-tight text-text-primary">Good morning, Sarah Chen ☀</h2>
+<p class="text-[13px] text-text-muted mt-1">Your publishing intelligence overview · Apr 2026</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-white hover:bg-canvas text-text-secondary border border-border font-medium text-[13px] py-2 px-4 rounded-lg transition-colors shadow-sm">
+                        View All Reports
+                    </button>
+<button class="bg-primary hover:bg-primary-hover text-on-primary font-medium text-[13px] py-2 px-4 rounded-lg transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                        Add Book
+                    </button>
+</div>
+</div>
+<!-- KPI Bar -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
+<!-- KPI 1 -->
+<div class="bg-white p-6 rounded-xl border border-border shadow-sm flex flex-col gap-2 hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-text-muted">
+<span class="text-[12px] font-medium">Books Tracked</span>
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+</div>
+<div class="flex flex-col gap-1 mt-1">
+<span class="font-kpi-value text-[30px] text-text-primary">47</span>
+<span class="flex items-center text-success-text text-[12px] font-medium">
+<span class="material-symbols-outlined text-[14px] leading-none">trending_up</span> +3 this month
+                        </span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-white p-6 rounded-xl border border-border shadow-sm flex flex-col gap-2 hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-text-muted">
+<span class="text-[12px] font-medium">Avg. Reader Rating</span>
+<span class="material-symbols-outlined text-[20px]">star</span>
+</div>
+<div class="flex flex-col gap-1 mt-1">
+<div class="flex items-baseline">
+<span class="font-kpi-value text-[30px] text-text-primary">4.1</span>
+<span class="text-lg font-mono text-slate-400 ml-1">/5.0</span>
+</div>
+<span class="flex items-center text-success-text text-[12px] font-medium">
+<span class="material-symbols-outlined text-[14px] leading-none">trending_up</span> +0.2 vs last quarter
+                        </span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-white p-6 rounded-xl border border-border shadow-sm flex flex-col gap-2 hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-text-muted">
+<span class="text-[12px] font-medium">Active NLP Alerts</span>
+<span class="material-symbols-outlined text-[20px]">notifications_active</span>
+</div>
+<div class="flex flex-col gap-1 mt-1">
+<span class="font-kpi-value text-[30px] text-text-primary">12</span>
+<span class="flex items-center text-warning-text text-[12px] font-medium">
+                            5 new today
+                        </span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-white p-6 rounded-xl border border-border shadow-sm flex flex-col gap-2 hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between text-text-muted">
+<span class="text-[12px] font-medium">Viral Potential Avg</span>
+<span class="material-symbols-outlined text-[20px]">zap</span>
+</div>
+<div class="flex flex-col gap-1 mt-1">
+<div class="flex items-baseline">
+<span class="font-kpi-value text-[30px] text-text-primary">78</span>
+<span class="text-lg font-mono text-slate-400 ml-1">/100</span>
+</div>
+<span class="flex items-center text-success-text text-[12px] font-medium">
+<span class="material-symbols-outlined text-[14px] leading-none">trending_up</span> +4 pts this week
+                        </span>
+</div>
+</div>
+</div>
+<!-- Main Grid 60/40 Split -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-grid-gap">
+<!-- Left Column: Top Performing Books -->
+<div class="col-span-1 lg:col-span-3 bg-white border border-border rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="px-6 py-5 border-b border-surface-raised flex justify-between items-center">
+<h3 class="text-[15px] font-semibold text-text-primary">Top Performing Books</h3>
+<div class="flex items-center gap-2">
+<select class="bg-canvas border-none text-[12px] text-text-muted rounded-md px-2 py-1 focus:ring-0 cursor-pointer outline-none font-medium">
+<option>This Month</option>
+<option>Last Quarter</option>
+</select>
+<button class="text-primary hover:text-primary-hover text-[12px] font-semibold">See All</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-canvas/50 border-b border-border text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+<th class="px-6 py-3">Title / Author</th>
+<th class="px-6 py-3">Rating</th>
+<th class="px-6 py-3">Sentiment</th>
+<th class="px-6 py-3">Viral</th>
+<th class="px-6 py-3 text-right">Trend</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border text-sm">
+<tr class="hover:bg-canvas transition-colors">
+<td class="px-6 py-4">
+<div class="text-[13px] font-medium text-text-primary">The Silent Echo</div>
+<div class="text-[11px] text-text-muted">J.K. Rowling</div>
+</td>
+<td class="px-6 py-4 text-text-secondary">4.8★</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 h-1 bg-border rounded-full overflow-hidden">
+<div class="bg-success h-full" style="width: 85%"></div>
+</div>
+<span class="text-[11px] font-mono text-text-muted">85%</span>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-text-primary">92</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-[16px] text-success leading-none">trending_up</span>
+</td>
+</tr>
+<tr class="hover:bg-canvas transition-colors">
+<td class="px-6 py-4">
+<div class="text-[13px] font-medium text-text-primary">Midnight Sun</div>
+<div class="text-[11px] text-text-muted">Stephenie Meyer</div>
+</td>
+<td class="px-6 py-4 text-text-secondary">4.2★</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 h-1 bg-border rounded-full overflow-hidden">
+<div class="bg-warning h-full" style="width: 60%"></div>
+</div>
+<span class="text-[11px] font-mono text-text-muted">60%</span>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-text-primary">78</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-[16px] text-text-muted leading-none">trending_flat</span>
+</td>
+</tr>
+<tr class="hover:bg-canvas transition-colors">
+<td class="px-6 py-4">
+<div class="text-[13px] font-medium text-text-primary">Shadows of the Past</div>
+<div class="text-[11px] text-text-muted">Dan Brown</div>
+</td>
+<td class="px-6 py-4 text-text-secondary">3.9★</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 h-1 bg-border rounded-full overflow-hidden">
+<div class="bg-error h-full" style="width: 45%"></div>
+</div>
+<span class="text-[11px] font-mono text-text-muted">45%</span>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-text-primary">65</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-[16px] text-error leading-none">trending_down</span>
+</td>
+</tr>
+<tr class="hover:bg-canvas transition-colors">
+<td class="px-6 py-4">
+<div class="text-[13px] font-medium text-text-primary">The Last Kingdom</div>
+<div class="text-[11px] text-text-muted">Bernard Cornwell</div>
+</td>
+<td class="px-6 py-4 text-text-secondary">4.5★</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-12 h-1 bg-border rounded-full overflow-hidden">
+<div class="bg-success h-full" style="width: 75%"></div>
+</div>
+<span class="text-[11px] font-mono text-text-muted">75%</span>
+</div>
+</td>
+<td class="px-6 py-4 font-mono text-text-primary">84</td>
+<td class="px-6 py-4 text-right">
+<span class="material-symbols-outlined text-[16px] text-success leading-none">trending_up</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Column: Stacked Cards -->
+<div class="col-span-1 lg:col-span-2 flex flex-col gap-grid-gap">
+<!-- NLP Alerts -->
+<div class="bg-white border border-border rounded-xl shadow-sm p-6 flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-[15px] font-semibold text-text-primary">Recent NLP Alerts</h3>
+<button class="text-primary hover:text-primary-hover text-[12px] font-semibold">Mark all</button>
+</div>
+<div class="flex flex-col">
+<div class="flex items-start gap-3 py-3 border-b border-canvas">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-error shrink-0"></div>
+<div class="flex-1">
+<p class="text-[13px] text-text-secondary leading-relaxed">"Shadows of the Past" pacing criticized in 18% of recent reviews.</p>
+<span class="text-[11px] text-text-muted block mt-1">2 hours ago</span>
+</div>
+</div>
+<div class="flex items-start gap-3 py-3 border-b border-canvas">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-warning shrink-0"></div>
+<div class="flex-1">
+<p class="text-[13px] text-text-secondary leading-relaxed">Plot confusion detected in Chapter 12 of "Midnight Sun".</p>
+<span class="text-[11px] text-text-muted block mt-1">5 hours ago</span>
+</div>
+</div>
+<div class="flex items-start gap-3 py-3">
+<div class="mt-1.5 w-2 h-2 rounded-full bg-primary shrink-0"></div>
+<div class="flex-1">
+<p class="text-[13px] text-text-secondary leading-relaxed">"The Silent Echo" quote trending on BookTok — +312% mentions.</p>
+<span class="text-[11px] text-text-muted block mt-1">1 day ago</span>
+</div>
+</div>
+<button class="text-primary hover:text-primary-hover text-[12px] font-semibold mt-4 flex items-center gap-1">
+                        View all 12 alerts <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Portfolio Sentiment -->
+<div class="bg-white border border-border rounded-xl shadow-sm p-6 flex flex-col">
+<h3 class="text-[15px] font-semibold text-text-primary mb-1">Portfolio Sentiment</h3>
+<p class="text-[11px] text-text-muted mb-4">Across 47 tracked books</p>
+<div class="flex items-center gap-6">
+<div class="w-20 h-20 rounded-full border-[6px] border-success flex flex-col items-center justify-center shrink-0">
+<span class="text-[20px] font-bold font-mono text-text-primary">72%</span>
+<span class="text-[9px] font-bold text-success uppercase tracking-tighter">Pos</span>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<div class="flex items-center justify-between text-[11px]">
+<span class="flex items-center gap-2 text-text-secondary"><div class="w-2 h-2 bg-success rounded-full"></div> Positive</span>
+<span class="font-mono font-bold text-text-primary">72%</span>
+</div>
+<div class="flex items-center justify-between text-[11px]">
+<span class="flex items-center gap-2 text-text-secondary"><div class="w-2 h-2 bg-text-faint rounded-full"></div> Neutral</span>
+<span class="font-mono font-bold text-text-primary">18%</span>
+</div>
+<div class="flex items-center justify-between text-[11px]">
+<span class="flex items-center gap-2 text-text-secondary"><div class="w-2 h-2 bg-error rounded-full"></div> Negative</span>
+<span class="font-mono font-bold text-text-primary">10%</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-4">
+<div class="bg-canvas p-2.5 rounded-lg border border-surface-raised text-center">
+<div class="text-[18px] font-bold font-mono text-success">72%</div>
+<div class="text-[9px] font-semibold text-text-muted uppercase tracking-wider">Pos.</div>
+</div>
+<div class="bg-canvas p-2.5 rounded-lg border border-surface-raised text-center">
+<div class="text-[18px] font-bold font-mono text-text-muted">18%</div>
+<div class="text-[9px] font-semibold text-text-muted uppercase tracking-wider">Neut.</div>
+</div>
+<div class="bg-canvas p-2.5 rounded-lg border border-surface-raised text-center">
+<div class="text-[18px] font-bold font-mono text-error">10%</div>
+<div class="text-[9px] font-semibold text-text-muted uppercase tracking-wider">Neg.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom: Genre Distribution -->
+<div class="bg-white border border-border rounded-xl shadow-sm p-6">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="text-[15px] font-semibold text-text-primary">Genre Distribution — Tracked Portfolio</h3>
+<p class="text-[12px] text-text-muted mt-0.5">Your 47 books across genre segments</p>
+</div>
+<select class="bg-canvas border border-border text-[13px] text-text-primary rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-primary/10 cursor-pointer outline-none font-medium">
+<option>All Time</option>
+<option>This Year</option>
+</select>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Row 1 -->
+<div class="flex items-center gap-4">
+<span class="w-[140px] text-[13px] font-medium text-text-secondary shrink-0">Literary Fiction</span>
+<div class="flex-1 h-2 bg-canvas rounded-full overflow-hidden">
+<div class="bg-chart-1 h-full rounded-full" style="width: 34%"></div>
+</div>
+<span class="w-10 text-right text-[13px] font-bold font-mono text-text-primary">34%</span>
+<span class="w-9 text-right text-[12px] text-text-muted">(16)</span>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center gap-4">
+<span class="w-[140px] text-[13px] font-medium text-text-secondary shrink-0">Contemporary</span>
+<div class="flex-1 h-2 bg-canvas rounded-full overflow-hidden">
+<div class="bg-chart-2 h-full rounded-full" style="width: 28%"></div>
+</div>
+<span class="w-10 text-right text-[13px] font-bold font-mono text-text-primary">28%</span>
+<span class="w-9 text-right text-[12px] text-text-muted">(13)</span>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center gap-4">
+<span class="w-[140px] text-[13px] font-medium text-text-secondary shrink-0">Fantasy</span>
+<div class="flex-1 h-2 bg-canvas rounded-full overflow-hidden">
+<div class="bg-chart-4 h-full rounded-full" style="width: 21%"></div>
+</div>
+<span class="w-10 text-right text-[13px] font-bold font-mono text-text-primary">21%</span>
+<span class="w-9 text-right text-[12px] text-text-muted">(10)</span>
+</div>
+<!-- Row 4 -->
+<div class="flex items-center gap-4">
+<span class="w-[140px] text-[13px] font-medium text-text-secondary shrink-0">Sci-Fi</span>
+<div class="flex-1 h-2 bg-canvas rounded-full overflow-hidden">
+<div class="bg-chart-3 h-full rounded-full" style="width: 11%"></div>
+</div>
+<span class="w-10 text-right text-[13px] font-bold font-mono text-text-primary">11%</span>
+<span class="w-9 text-right text-[12px] text-text-muted">(5)</span>
+</div>
+<!-- Row 5 -->
+<div class="flex items-center gap-4">
+<span class="w-[140px] text-[13px] font-medium text-text-secondary shrink-0">Other</span>
+<div class="flex-1 h-2 bg-canvas rounded-full overflow-hidden">
+<div class="bg-text-faint h-full rounded-full" style="width: 6%"></div>
+</div>
+<span class="w-10 text-right text-[13px] font-bold font-mono text-text-primary">6%</span>
+<span class="w-9 text-right text-[12px] text-text-muted">(3)</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
