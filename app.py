@@ -53,7 +53,7 @@ st.markdown(
     html, body, [class*="st-"] {
         font-family: 'IBM Plex Sans', sans-serif;
         color: #0F172A;
-        background-color: #F8FAFC;
+        background-color: #c1c9f2;;
     }
 
     .block-container {
