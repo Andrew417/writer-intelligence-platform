@@ -14,7 +14,7 @@ inject_styles()
 # Fetching from the database exactly as your teammate set it up
 try:
     genres_df = get_all_genres()
-    books_df = get_all_books_for_search()
+    books_df = get_all_books()
 except Exception as e:
     st.error(f"Database connection error: {e}")
     st.stop()
