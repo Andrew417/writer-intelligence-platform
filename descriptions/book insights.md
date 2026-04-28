@@ -1,5 +1,3 @@
----
-
 ## 1. Sentiment Strength
 sentiment_strength
 
@@ -32,9 +30,11 @@ normalized_sentiment_strength
 2. Apply *Relative Min-Max Normalization*:
 
 
+
 $$
 \frac{\text{score} - \min}{\max - \min}
 $$
+
 
 
 ### Interpretation
@@ -66,7 +66,7 @@ avg_review_emotion
 > - A *textbook* might have high positive sentiment ("This was very useful") but zero emotion.
 > - A *thriller* might have terrifying emotion but mixed sentiment.
 > 
->This metric isolates the book's ability to *trigger the human nervous system*.
+> This metric isolates the book's ability to *trigger the human nervous system*.
 
 ---
 
@@ -123,9 +123,11 @@ engagement_depth_score
 A *weighted composite formula*:
 
 
+
 $$
 (\text{normalized\_review\_conversion} \times 0.3) + (\text{normalized\_sentiment\_strength} \times 0.25) + (\text{avg\_review\_emotion} \times 0.2) + (\text{reviewer\_engagement\_score} \times 0.25)
 $$
+
 
 
 | Component                     | Weight |
@@ -156,9 +158,11 @@ normalized_rating
 3. Apply *Min-Max Normalization*:
 
 
+
 $$
 \frac{\text{rating} - \text{db\_min}}{\text{db\_max} - \text{db\_min}}
 $$
+
 
 
 ### Interpretation
@@ -184,9 +188,11 @@ true_satisfaction
 A 50/50 blend of conscious rating and subconscious effort:
 
 
+
 $$
 (\text{normalized\_rating} \times 0.5) + (\text{engagement\_depth\_score} \times 0.5)
 $$
+
 
 
 ### Interpretation
@@ -198,7 +204,7 @@ $$
 > 1. Give it ⭐⭐⭐⭐⭐
 > 2. *Back up* those stars with massive, emotional, high-conversion reviews
 > 
->It separates the *"respected"* books from the *"beloved"* books.
+> It separates the *"respected"* books from the *"beloved"* books.
 
 ---
 
@@ -238,13 +244,15 @@ normalized_bang_for_buck
 ### How to Calculate
 1. Extract digits from page_count and price
 2. Fill missing data with *database medians*
-3. Clip the price to a minimum of \$0.99 to prevent infinite division
+3. Clip the price to a minimum of \\$0.99 to prevent infinite division
 4. Apply the formula:
+
 
 
 $$
 \text{np.log1p}\left(\frac{\text{pages} \times \text{engagement\_depth}}{\text{price}}\right)
 $$
+
 
 
 5. *Min-Max normalize* to 0.0 - 1.0
@@ -257,8 +265,9 @@ $$
 > [!tip] The Ultimate Consumer-Advocacy Metric
 > It bridges the gap between *artistic merit* (Engagement Depth) and *economic reality* (Price per Page). It allows a user to ask:
 > 
->"If I only have \$10 to spend this month, which book will give me the highest volume of premium entertainment?"
+> "If I only have \\$10 to spend this month, which book will give me the highest volume of premium entertainment?"
 
+---
 
 ## 11. Normalized Timelessness
 normalized_timelessness
@@ -285,3 +294,56 @@ normalized_timelessness
 > In the book industry, *marketing and viral trends* drive reading for the first 6 months, but *legacy* drives reading for the next 60 years. By multiplying the passage of time by your [[#8. True Satisfaction|True Satisfaction]] metric (which requires both high ratings *and* deep psychological engagement), this metric perfectly separates the temporary "flash-in-the-pan" TikTok trends from the ==permanent cultural touchstones==.
 > 
 > It tells a user: *"This isn't just a good book right now; this is a good book forever."*
+
+---
+
+## 12. Standout Scores
+standout_scores
+
+> [!info] Definition
+> A per-genre comparative ratio that measures how a book's [[#8. True Satisfaction|true_satisfaction]] stacks up against the *average satisfaction of all books within that specific genre*. Stored as an array of objects on the book's document, with an accompanying `top_genre_standout_score` string identifying the genre where the book shines brightest.
+
+### What It Looks Like
+
+```json
+[
+  {"genre": "Science Fiction", "standout_score": 1.15},
+  {"genre": "Fantasy", "standout_score": 0.95}
+]
+```
+
+### How to Calculate
+
+
+$$
+\text{standout\_score} = \frac{\text{true\_satisfaction}}{\text{avg\_satisfaction (for that genre)}}
+$$
+
+
+**Full Pipeline (Python / Pandas → MongoDB):**
+
+1. **Extract Data** — Query the `books` collection for each book's ID, its list of genres, and its [[#8. True Satisfaction|true_satisfaction]] score. Query the `genre_analysis` collection for the `avg_satisfaction` of every genre.
+2. **Flatten (Explode)** — "Explode" each book's genres list so a book with 3 genres becomes 3 temporary rows, one per genre.
+3. **Merge with Averages** — Map the genre-level `avg_satisfaction` onto each exploded row.
+4. **Calculate the Ratio** — Divide the book's `true_satisfaction` by the genre's `avg_satisfaction`.
+5. **Re-Group into Arrays** — Group rows back by `book_id`, packaging individual scores into the structured array format `{"genre": ..., "standout_score": ...}`.
+6. **Extract the Top Score** — Scan the array for the highest value and format it as a readable string (e.g., `"Science Fiction: 1.15"`) to save as `top_genre_standout_score`.
+7. **Update the Database** — Bulk-write both the array and the top-genre string back into the `books` collection in MongoDB.
+
+### Interpretation
+
+| Score | Meaning                                                |
+| ----- | ------------------------------------------------------ |
+| > 1.0 | The book *outperforms* the average for that genre      |
+| = 1.0 | The book *perfectly matches* the genre average         |
+| < 1.0 | The book *underperforms* relative to the genre average |
+
+### Why It Matters
+
+> [!tip] The "Context Equalizer"
+> **Contextual Evaluation (Normalization):** Raw ratings don't tell the whole story because different genres naturally have different average ratings. Romance books might receive higher averages than Academic texts. The standout score *normalizes* a book's rating against its specific peers, enabling a fair, ==apples-to-apples comparison==.
+> 
+> **Multi-Genre Insight:** Books often belong to multiple genres. A book might be an incredible "Sci-Fi" novel (high standout score) but a terrible "Romance" novel (low standout score). This array tells you *exactly which of its genres the book excels in the most*.
+> 
+> **Recommendation & Discovery:** By surfacing the `top_genre_standout_score`, recommendation engines and readers can see the exact niche where the book shines, making it easier to *market or suggest the book to its target audience*.
+

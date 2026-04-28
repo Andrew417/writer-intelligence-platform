@@ -1,0 +1,1201 @@
+
+
+Here's the fully rewritten code — every metric from your data model is surfaced, semantic emotion colors are applied throughout, the top bar tabs are converted to scroll anchors, the selected genre is highlighted in the matrix, `total_books` is visible, and the "More" dropdown is functional:
+
+```html
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PubIntel - Genre Analysis</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        canvas: "#F8FAFC",
+                        surface: "#FFFFFF",
+                        border: "#E2E8F0",
+                        "border-strong": "#CBD5E1",
+                        "text-primary": "#0F172A",
+                        "text-secondary": "#334155",
+                        "text-muted": "#64748B",
+                        "text-faint": "#94A3B8",
+                        primary: "#4F46E5",
+                        "primary-hover": "#4338CA",
+                        "primary-subtle": "#EEF2FF",
+                        "primary-muted": "#C7D2FE",
+                        success: "#10B981",
+                        "success-subtle": "#D1FAE5",
+                        "success-text": "#065F46",
+                        warning: "#F59E0B",
+                        "warning-subtle": "#FEF3C7",
+                        "warning-text": "#78350F",
+                        error: "#F43F5E",
+                        "error-subtle": "#FFE4E6",
+                        "error-text": "#9F1239",
+                        "emo-joy": "#F59E0B",
+                        "emo-joy-subtle": "#FEF3C7",
+                        "emo-anger": "#EF4444",
+                        "emo-anger-subtle": "#FEE2E2",
+                        "emo-sadness": "#6B8DAE",
+                        "emo-sadness-subtle": "#E0EAF2",
+                        "emo-fear": "#7C3AED",
+                        "emo-fear-subtle": "#EDE9FE",
+                        "emo-surprise": "#14B8A6",
+                        "emo-surprise-subtle": "#CCFBF1",
+                    },
+                    fontFamily: {
+                        body: ["Inter"],
+                        mono: ["ui-monospace", "SFMono-Regular", "monospace"],
+                    },
+                    fontSize: {
+                        "kpi-value": ["32px", { lineHeight: "1.0", letterSpacing: "-0.04em", fontWeight: "700" }],
+                        "heading-section": ["20px", { lineHeight: "1.3", letterSpacing: "-0.02em", fontWeight: "600" }],
+                        "card-title": ["15px", { lineHeight: "1.4", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        display: ["28px", { lineHeight: "1.2", letterSpacing: "-0.03em", fontWeight: "700" }],
+                        caption: ["12px", { lineHeight: "1.4", fontWeight: "400" }],
+                        "nav-label": ["13px", { lineHeight: "1.0", fontWeight: "500" }],
+                    },
+                    spacing: {
+                        card: "24px",
+                        "grid-gap": "20px",
+                        page: "32px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        html { scroll-behavior: smooth; }
+
+        /* Genre pill scrollbar */
+        .genre-scroll::-webkit-scrollbar { height: 0; }
+
+        /* Radial gauge */
+        .radial-gauge {
+            position: relative;
+            width: 52px;
+            height: 52px;
+        }
+        .radial-gauge svg {
+            transform: rotate(-90deg);
+        }
+        .radial-gauge .track {
+            fill: none;
+            stroke: #F1F5F9;
+            stroke-width: 5;
+        }
+        .radial-gauge .fill {
+            fill: none;
+            stroke-width: 5;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.8s ease;
+        }
+        .radial-gauge .value {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: ui-monospace, monospace;
+        }
+
+        /* Sentiment spectrum */
+        .sentiment-spectrum {
+            background: linear-gradient(to right, #EF4444, #94A3B8, #10B981);
+            border-radius: 9999px;
+        }
+
+        /* Intensity bars */
+        .intensity-bar { transition: all 0.5s ease; }
+
+        /* More dropdown */
+        .genre-dropdown { display: none; }
+        .genre-dropdown.active { display: block; }
+
+        /* Matrix row highlight */
+        .matrix-row-active {
+            background-color: #EEF2FF !important;
+            border-left: 3px solid #4F46E5;
+        }
+    </style>
+</head>
+
+<body class="bg-canvas font-body text-text-primary antialiased">
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- SIDE NAVIGATION                         -->
+    <!-- ═══════════════════════════════════════ -->
+    <aside class="w-[250px] h-screen fixed left-0 top-0 border-r border-slate-200 bg-white flex flex-col py-6 px-4 z-50">
+        <!-- Brand -->
+        <div class="flex items-center gap-3 mb-10 px-2">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-lg filled">insights</span>
+            </div>
+            <div>
+                <div class="text-lg font-bold text-slate-900 tracking-tighter">PubIntel</div>
+                <div class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Editorial Insights</div>
+            </div>
+        </div>
+
+        <!-- Nav Items -->
+        <nav class="flex-1 space-y-1">
+            <a href="#" class="text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-150 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight">
+                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Dashboard
+            </a>
+            <a href="#" class="text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-150 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight">
+                <span class="material-symbols-outlined text-[20px]">auto_stories</span>
+                Book Insights
+            </a>
+            <a href="#" class="text-primary bg-primary-subtle relative after:absolute after:right-0 after:top-0 after:h-full after:w-[3px] after:bg-primary after:rounded-l-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight">
+                <span class="material-symbols-outlined text-[20px]">menu_book</span>
+                Genre Intel
+            </a>
+            <a href="#" class="text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-150 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight">
+                <span class="material-symbols-outlined text-[20px]">groups</span>
+                Audience
+            </a>
+            <a href="#" class="text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-150 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium tracking-tight">
+                <span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
+        </nav>
+
+        <!-- Bottom -->
+        <div class="mt-auto">
+            <button class="w-full py-2.5 bg-primary text-white rounded-lg font-semibold text-sm hover:bg-primary-hover transition-colors shadow-sm shadow-indigo-200 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">add</span>
+                New Analysis
+            </button>
+            <div class="mt-6 pt-6 border-t border-slate-100 flex items-center gap-3 px-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">SA</div>
+                <div class="overflow-hidden">
+                    <div class="text-xs font-bold text-slate-900 truncate">S. Abernathy</div>
+                    <div class="text-[10px] text-slate-500 truncate">Lead Editorial Analyst</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- TOP APP BAR                              -->
+    <!-- ═══════════════════════════════════════ -->
+    <header class="fixed top-0 right-0 w-[calc(100%-250px)] h-16 border-b border-slate-200 bg-white/85 backdrop-blur-md z-40 flex items-center">
+        <div class="flex items-center justify-between px-8 w-full">
+            <!-- Search -->
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                <input class="pl-10 pr-12 py-1.5 bg-slate-50 border-none rounded-lg text-sm w-72 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all" placeholder="Search genres, metrics, or insights..." type="text" />
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400 border border-slate-200 px-1.5 py-0.5 rounded">⌘K</span>
+            </div>
+
+            <!-- Scroll Anchor Tabs -->
+            <nav class="hidden lg:flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                <a href="#kpi-section" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-white shadow-sm text-primary">Overview</a>
+                <a href="#emotion-section" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors">Emotions</a>
+                <a href="#sentiment-section" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors">Sentiment</a>
+                <a href="#matrix-section" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors">Matrix</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3">
+                <button class="w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-50 transition-colors relative">
+                    <span class="material-symbols-outlined text-xl">notifications</span>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+                </button>
+                <button class="w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-xl">help_outline</span>
+                </button>
+                <div class="w-px h-6 bg-slate-200"></div>
+                <button class="bg-white border border-slate-200 text-slate-700 px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">download</span>
+                    Export PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- MAIN CONTENT                             -->
+    <!-- ═══════════════════════════════════════ -->
+    <main class="ml-[250px] pt-24 pb-16 px-8 min-h-screen max-w-[1320px] mx-auto">
+
+        <!-- ─── Page Header ─── -->
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h1 class="text-display text-text-primary mb-1">Genre Analysis</h1>
+                <p class="text-text-muted text-sm">Statistical profiles · Psychological fingerprints · Market positioning</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs text-text-faint font-medium">Last updated: 2 hours ago</span>
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-slate-600 hover:border-slate-300 transition-colors">
+                    <span class="material-symbols-outlined text-lg">refresh</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ─── Genre Selector (Horizontal Pill Bar) ─── -->
+        <div class="relative mb-8" id="kpi-section">
+            <div class="bg-white border border-slate-200 rounded-xl p-1.5 flex items-center gap-1 shadow-sm genre-scroll overflow-x-auto">
+                <button class="genre-pill px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-base">grid_view</span>
+                    All Genres
+                </button>
+                <button class="genre-pill px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emo-fear"></span>
+                    Fantasy
+                    <span class="text-[10px] font-mono text-slate-400">312</span>
+                </button>
+                <button class="genre-pill px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emo-sadness"></span>
+                    Literary Fiction
+                    <span class="text-[10px] font-mono text-slate-400">189</span>
+                </button>
+                <!-- ACTIVE GENRE -->
+                <button class="genre-pill px-4 py-2 rounded-lg text-sm font-semibold bg-primary text-white shadow-sm whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-white/60"></span>
+                    Thriller
+                    <span class="text-[10px] font-mono text-white/70">247</span>
+                </button>
+                <button class="genre-pill px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emo-joy"></span>
+                    Romance
+                    <span class="text-[10px] font-mono text-slate-400">534</span>
+                </button>
+                <button class="genre-pill px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emo-surprise"></span>
+                    Sci-Fi
+                    <span class="text-[10px] font-mono text-slate-400">203</span>
+                </button>
+
+                <!-- More Dropdown Trigger -->
+                <div class="relative ml-auto">
+                    <button onclick="document.getElementById('genre-dropdown').classList.toggle('active')" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-1 whitespace-nowrap">
+                        +14 more
+                        <span class="material-symbols-outlined text-lg">expand_more</span>
+                    </button>
+                    <!-- Dropdown -->
+                    <div id="genre-dropdown" class="genre-dropdown absolute right-0 top-full mt-2 w-72 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-30 max-h-80 overflow-y-auto">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-2">All Genres</div>
+                        <div class="space-y-0.5">
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-joy"></span> Biography</span>
+                                <span class="text-[10px] font-mono text-slate-400">87</span>
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-sadness"></span> Historical Fiction</span>
+                                <span class="text-[10px] font-mono text-slate-400">156</span>
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-fear"></span> Horror</span>
+                                <span class="text-[10px] font-mono text-slate-400">134</span>
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-surprise"></span> Mystery</span>
+                                <span class="text-[10px] font-mono text-slate-400">198</span>
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-anger"></span> Philosophy</span>
+                                <span class="text-[10px] font-mono text-slate-400">42</span>
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-joy"></span> Self-Help</span>
+                                <span class="text-[10px] font-mono text-slate-400">221</span>
+                            </button>
+                            <button class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-between">
+                                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emo-sadness"></span> Memoir</span>
+                                <span class="text-[10px] font-mono text-slate-400">93</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── Genre Hero Badge ─── -->
+        <div class="flex items-center gap-4 mb-8 bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+            <div class="w-14 h-14 bg-emo-fear-subtle rounded-2xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-3xl text-emo-fear filled">bolt</span>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-2xl font-extrabold text-text-primary tracking-tight">Thriller</h2>
+                    <span class="px-2.5 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-bold rounded-full font-mono">247 books</span>
+                    <span class="px-2.5 py-0.5 bg-emo-fear-subtle text-emo-fear text-[11px] font-bold rounded-full flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs filled">warning</span>
+                        Fear Dominant
+                    </span>
+                </div>
+                <p class="text-text-muted text-sm mt-0.5 italic">A high-intensity genre that weaponizes controlled anxiety to deliver peak engagement and viral community discussion.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">compare_arrows</span>
+                    Compare
+                </button>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- KPI ROW — ALL 6 CORE METRICS            -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="grid grid-cols-6 gap-4 mb-8">
+            <!-- Avg Satisfaction -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm group relative">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] text-text-faint font-bold uppercase tracking-widest">Satisfaction</span>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="radial-gauge">
+                        <svg viewBox="0 0 52 52" width="52" height="52">
+                            <circle class="track" cx="26" cy="26" r="22"></circle>
+                            <circle class="fill" cx="26" cy="26" r="22" stroke="#4F46E5" stroke-dasharray="138.2" stroke-dashoffset="17.3"></circle>
+                        </svg>
+                        <span class="value text-primary">0.88</span>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-text-primary font-mono">0.88</div>
+                        <div class="flex items-center gap-1 text-success text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-[10px]">trending_up</span>+2.4%
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-text-faint mt-2">Loyalty</p>
+            </div>
+
+            <!-- Engagement Depth -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm group relative">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] text-text-faint font-bold uppercase tracking-widest">Engagement</span>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="radial-gauge">
+                        <svg viewBox="0 0 52 52" width="52" height="52">
+                            <circle class="track" cx="26" cy="26" r="22"></circle>
+                            <circle class="fill" cx="26" cy="26" r="22" stroke="#10B981" stroke-dasharray="138.2" stroke-dashoffset="24.9"></circle>
+                        </svg>
+                        <span class="value text-success">0.82</span>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-text-primary font-mono">0.82</div>
+                        <div class="flex items-center gap-1 text-success text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-[10px]">trending_up</span>+5.1%
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-text-faint mt-2">Discussion</p>
+            </div>
+
+            <!-- Bang for Buck -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm group relative">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] text-text-faint font-bold uppercase tracking-widest">Value</span>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="radial-gauge">
+                        <svg viewBox="0 0 52 52" width="52" height="52">
+                            <circle class="track" cx="26" cy="26" r="22"></circle>
+                            <circle class="fill" cx="26" cy="26" r="22" stroke="#F59E0B" stroke-dasharray="138.2" stroke-dashoffset="41.5"></circle>
+                        </svg>
+                        <span class="value text-warning">0.70</span>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-text-primary font-mono">0.70</div>
+                        <div class="flex items-center gap-1 text-text-faint text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-[10px]">horizontal_rule</span>0.0%
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-text-faint mt-2">Bang for Buck</p>
+            </div>
+
+            <!-- Viral Potential -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm group relative">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] text-text-faint font-bold uppercase tracking-widest">Hype</span>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="radial-gauge">
+                        <svg viewBox="0 0 52 52" width="52" height="52">
+                            <circle class="track" cx="26" cy="26" r="22"></circle>
+                            <circle class="fill" cx="26" cy="26" r="22" stroke="#EC4899" stroke-dasharray="138.2" stroke-dashoffset="12.4"></circle>
+                        </svg>
+                        <span class="value text-pink-500">0.91</span>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-text-primary font-mono">0.91</div>
+                        <div class="flex items-center gap-1 text-error text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-[10px]">trending_down</span>-0.8%
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-text-faint mt-2">Viral Potential</p>
+            </div>
+
+            <!-- Timelessness -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm group relative">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] text-text-faint font-bold uppercase tracking-widest">Legacy</span>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="radial-gauge">
+                        <svg viewBox="0 0 52 52" width="52" height="52">
+                            <circle class="track" cx="26" cy="26" r="22"></circle>
+                            <circle class="fill" cx="26" cy="26" r="22" stroke="#6B8DAE" stroke-dasharray="138.2" stroke-dashoffset="48.4"></circle>
+                        </svg>
+                        <span class="value text-emo-sadness">0.65</span>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-text-primary font-mono">0.65</div>
+                        <div class="flex items-center gap-1 text-success text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-[10px]">trending_up</span>+1.2%
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-text-faint mt-2">Timelessness</p>
+            </div>
+
+            <!-- Emotional Complexity -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm group relative">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[10px] text-text-faint font-bold uppercase tracking-widest">Complexity</span>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="radial-gauge">
+                        <svg viewBox="0 0 52 52" width="52" height="52">
+                            <circle class="track" cx="26" cy="26" r="22"></circle>
+                            <circle class="fill" cx="26" cy="26" r="22" stroke="#7C3AED" stroke-dasharray="138.2" stroke-dashoffset="55.3"></circle>
+                        </svg>
+                        <span class="value text-emo-fear">0.60</span>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold text-text-primary font-mono">0.60</div>
+                        <div class="flex items-center gap-1 text-success text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-[10px]">trending_up</span>+0.5%
+                        </div>
+                    </div>
+                </div>
+                <p class="text-[10px] text-text-faint mt-2">Emotional Range</p>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- EMOTION + DOMINANT EMOTION ROW          -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="grid grid-cols-12 gap-grid-gap mb-8" id="emotion-section">
+
+            <!-- Emotion Breakdown (Semantic Colors) -->
+            <div class="col-span-7 bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-heading-section font-semibold">Emotion Fingerprint</h3>
+                        <p class="text-caption text-text-muted">NLP emotion distribution across 247 books · 18.4K reviews</p>
+                    </div>
+                    <button class="text-primary text-xs font-bold flex items-center gap-1 hover:underline">
+                        Raw Data
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    </button>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Fear -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="flex items-center gap-2 text-slate-700">
+                                <span class="w-3 h-3 rounded-full bg-emo-fear"></span>
+                                😨 Fear
+                                <span class="text-[10px] font-bold text-emo-fear bg-emo-fear-subtle px-1.5 py-0.5 rounded-full">PRIMARY</span>
+                            </span>
+                            <span class="font-mono text-emo-fear">0.42</span>
+                        </div>
+                        <div class="h-3 w-full bg-emo-fear-subtle rounded-full overflow-hidden">
+                            <div class="h-full bg-emo-fear rounded-full transition-all duration-700" style="width: 42%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Surprise -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="flex items-center gap-2 text-slate-700">
+                                <span class="w-3 h-3 rounded-full bg-emo-surprise"></span>
+                                😲 Surprise
+                            </span>
+                            <span class="font-mono text-emo-surprise">0.28</span>
+                        </div>
+                        <div class="h-3 w-full bg-emo-surprise-subtle rounded-full overflow-hidden">
+                            <div class="h-full bg-emo-surprise rounded-full transition-all duration-700" style="width: 28%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Anger -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="flex items-center gap-2 text-slate-700">
+                                <span class="w-3 h-3 rounded-full bg-emo-anger"></span>
+                                😡 Anger
+                            </span>
+                            <span class="font-mono text-emo-anger">0.15</span>
+                        </div>
+                        <div class="h-3 w-full bg-emo-anger-subtle rounded-full overflow-hidden">
+                            <div class="h-full bg-emo-anger rounded-full transition-all duration-700" style="width: 15%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Joy -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="flex items-center gap-2 text-slate-700">
+                                <span class="w-3 h-3 rounded-full bg-emo-joy"></span>
+                                😊 Joy
+                            </span>
+                            <span class="font-mono text-emo-joy">0.10</span>
+                        </div>
+                        <div class="h-3 w-full bg-emo-joy-subtle rounded-full overflow-hidden">
+                            <div class="h-full bg-emo-joy rounded-full transition-all duration-700" style="width: 10%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sadness -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center text-xs font-semibold">
+                            <span class="flex items-center gap-2 text-slate-700">
+                                <span class="w-3 h-3 rounded-full bg-emo-sadness"></span>
+                                😢 Sadness
+                            </span>
+                            <span class="font-mono text-emo-sadness">0.05</span>
+                        </div>
+                        <div class="h-3 w-full bg-emo-sadness-subtle rounded-full overflow-hidden">
+                            <div class="h-full bg-emo-sadness rounded-full transition-all duration-700" style="width: 5%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dominant Emotion Hero Card -->
+            <div class="col-span-5 bg-slate-900 rounded-xl overflow-hidden relative min-h-[420px]">
+                <!-- Background gradient (no external image dependency) -->
+                <div class="absolute inset-0 bg-gradient-to-br from-emo-fear/30 via-slate-900 to-slate-900"></div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-emo-fear/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-emo-surprise/10 rounded-full blur-3xl"></div>
+
+                <div class="relative h-full p-8 flex flex-col justify-end">
+                    <!-- Floating icon -->
+                    <div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20">
+                        <span class="material-symbols-outlined text-4xl text-white filled">warning</span>
+                    </div>
+
+                    <div class="mb-2">
+                        <span class="px-3 py-1 bg-emo-fear text-white text-[10px] font-bold uppercase tracking-widest rounded-full">Dominant Emotion</span>
+                    </div>
+                    <h2 class="text-5xl font-extrabold text-white mb-2 tracking-tight">Fear</h2>
+                    <p class="text-purple-200 text-lg font-medium italic">"Tense, unsettling, gripping"</p>
+
+                    <p class="text-slate-400 text-sm mt-5 leading-relaxed max-w-sm">
+                        The primary psychological driver for Thriller readers is controlled anxiety. 42% of all NLP-detected emotion vocabulary maps to fear-adjacent language.
+                    </p>
+
+                    <!-- Mini emotion pills -->
+                    <div class="flex items-center gap-2 mt-5">
+                        <span class="px-2 py-1 bg-emo-fear/20 text-purple-300 text-[10px] font-bold rounded-full border border-emo-fear/30">😨 42%</span>
+                        <span class="px-2 py-1 bg-emo-surprise/20 text-teal-300 text-[10px] font-bold rounded-full border border-emo-surprise/30">😲 28%</span>
+                        <span class="px-2 py-1 bg-emo-anger/20 text-red-300 text-[10px] font-bold rounded-full border border-emo-anger/30">😡 15%</span>
+                        <span class="px-2 py-1 bg-white/5 text-slate-400 text-[10px] font-bold rounded-full border border-white/10">+2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- SENTIMENT & INTENSITY ROW               -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="grid grid-cols-3 gap-grid-gap mb-8" id="sentiment-section">
+
+            <!-- Avg Sentiment (Positivity Spectrum) -->
+            <div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="text-card-title font-semibold">Sentiment</h3>
+                        <p class="text-[11px] text-text-faint">The Positivity Metric</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="text-2xl font-bold font-mono text-text-primary mt-4 mb-2">+0.32</div>
+                <p class="text-xs text-text-muted mb-4">Slightly positive — reviewers trend cautiously optimistic</p>
+
+                <!-- Spectrum bar -->
+                <div class="relative mt-4">
+                    <div class="sentiment-spectrum h-2.5 w-full"></div>
+                    <!-- Marker -->
+                    <div class="absolute top-1/2 -translate-y-1/2" style="left: 66%;">
+                        <div class="w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md"></div>
+                    </div>
+                    <!-- Labels -->
+                    <div class="flex justify-between mt-2 text-[10px] font-bold text-text-faint">
+                        <span>−1.0 Negative</span>
+                        <span>0 Neutral</span>
+                        <span>+1.0 Positive</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Avg Sentiment Strength (Intensity Meter) -->
+            <div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="text-card-title font-semibold">Sentiment Strength</h3>
+                        <p class="text-[11px] text-text-faint">The Intensity Metric</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="text-2xl font-bold font-mono text-text-primary mt-4 mb-2">0.78</div>
+                <p class="text-xs text-text-muted mb-4">High intensity — readers feel very strongly about this genre</p>
+
+                <!-- Intensity bars -->
+                <div class="flex items-end gap-1.5 mt-4 h-12">
+                    <div class="flex-1 bg-primary rounded-t intensity-bar" style="height: 30%"></div>
+                    <div class="flex-1 bg-primary rounded-t intensity-bar" style="height: 45%"></div>
+                    <div class="flex-1 bg-primary rounded-t intensity-bar" style="height: 55%"></div>
+                    <div class="flex-1 bg-primary rounded-t intensity-bar" style="height: 70%"></div>
+                    <div class="flex-1 bg-primary rounded-t intensity-bar" style="height: 78%"></div>
+                    <div class="flex-1 bg-primary/40 rounded-t intensity-bar" style="height: 90%"></div>
+                    <div class="flex-1 bg-primary/20 rounded-t intensity-bar" style="height: 100%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-[10px] font-bold text-text-faint">
+                    <span>Apathetic</span>
+                    <span>Moderate</span>
+                    <span>Polarizing</span>
+                </div>
+            </div>
+
+            <!-- Emotional Complexity (Rollercoaster Gauge) -->
+            <div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="text-card-title font-semibold">Emotional Complexity</h3>
+                        <p class="text-[11px] text-text-faint">The Rollercoaster Metric</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300 text-base cursor-help">info</span>
+                </div>
+                <div class="text-2xl font-bold font-mono text-text-primary mt-4 mb-2">0.60</div>
+                <p class="text-xs text-text-muted mb-4">Moderate range — focused Fear with bursts of Surprise</p>
+
+                <!-- Visual: simplified emotion band -->
+                <div class="flex gap-1 mt-4 h-10 items-end">
+                    <div class="flex-1 bg-emo-fear rounded-t" style="height: 100%"></div>
+                    <div class="flex-1 bg-emo-surprise rounded-t" style="height: 67%"></div>
+                    <div class="flex-1 bg-emo-anger rounded-t" style="height: 36%"></div>
+                    <div class="flex-1 bg-emo-joy rounded-t" style="height: 24%"></div>
+                    <div class="flex-1 bg-emo-sadness rounded-t" style="height: 12%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-[10px] font-bold text-text-faint">
+                    <span>One Mood</span>
+                    <span>Rollercoaster</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- CULTURAL POSITIONING MATRIX             -->
+        <!-- ═══════════════════════════════════════ -->
+        <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="matrix-section">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
+                <div>
+                    <h3 class="text-heading-section font-semibold">Cultural Positioning Matrix</h3>
+                    <p class="text-caption text-text-muted">Cross-genre comparison · Selected genre highlighted</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-4 text-[10px] font-bold text-text-faint">
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-200"></span> Low</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-primary"></span> High</span>
+                    </div>
+                    <button class="text-primary text-xs font-bold flex items-center gap-1 hover:underline">
+                        Export Table
+                        <span class="material-symbols-outlined text-sm">download</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-white border-b border-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Genre</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Books</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Satisfaction</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Engagement</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Complexity</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Intensity</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dominant</th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <!-- Literary Fiction -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">auto_stories</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Literary Fiction</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">189</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 92%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.92</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 85%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.85</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 95%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.95</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 40%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.40</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-sadness-subtle text-emo-sadness text-[10px] font-bold rounded-full">😢 Sadness</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-text-faint font-mono text-xs">+0.2%</span></td>
+                        </tr>
+
+                        <!-- THRILLER (HIGHLIGHTED - ACTIVE GENRE) -->
+                        <tr class="matrix-row-active transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+                                        <span class="material-symbols-outlined text-lg">bolt</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-primary text-sm">Thriller</span>
+                                        <span class="ml-1.5 text-[9px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">SELECTED</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs font-bold text-primary">247</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-primary/10 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 88%"></div></div>
+                                    <span class="text-xs font-mono font-bold text-primary">0.88</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-primary/10 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 82%"></div></div>
+                                    <span class="text-xs font-mono font-bold text-primary">0.82</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-primary/10 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 60%"></div></div>
+                                    <span class="text-xs font-mono font-bold text-primary">0.60</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-primary/10 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 78%"></div></div>
+                                    <span class="text-xs font-mono font-bold text-primary">0.78</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-fear-subtle text-emo-fear text-[10px] font-bold rounded-full">😨 Fear</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-success font-mono text-xs font-bold">+12.5%</span></td>
+                        </tr>
+
+                        <!-- Romance -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">favorite</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Romance</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">534</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 80%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.80</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 68%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.68</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 35%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.35</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 88%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.88</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-joy-subtle text-emo-joy text-[10px] font-bold rounded-full">😊 Joy</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-success font-mono text-xs">+4.8%</span></td>
+                        </tr>
+
+                        <!-- Fantasy -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">castle</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Fantasy</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">312</span></td>
+                            <td class="px-6 py-4">                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 90%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.90</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 79%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.79</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 78%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.78</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 72%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.72</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-surprise-subtle text-emo-surprise text-[10px] font-bold rounded-full">😲 Surprise</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-error font-mono text-xs">-1.4%</span></td>
+                        </tr>
+
+                        <!-- Sci-Fi -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">rocket_launch</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Science Fiction</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">203</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 86%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.86</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 90%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.90</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 82%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.82</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 65%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.65</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-surprise-subtle text-emo-surprise text-[10px] font-bold rounded-full">😲 Surprise</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-success font-mono text-xs">+3.2%</span></td>
+                        </tr>
+
+                        <!-- Horror -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">skull</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Horror</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">134</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 75%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.75</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 77%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.77</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 42%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.42</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 91%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.91</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-fear-subtle text-emo-fear text-[10px] font-bold rounded-full">😨 Fear</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-success font-mono text-xs">+8.1%</span></td>
+                        </tr>
+
+                        <!-- Historical Fiction -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">history_edu</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Historical Fiction</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">156</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 87%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.87</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 73%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.73</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 88%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.88</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 55%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.55</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-sadness-subtle text-emo-sadness text-[10px] font-bold rounded-full">😢 Sadness</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-success font-mono text-xs">+1.9%</span></td>
+                        </tr>
+
+                        <!-- Biography -->
+                        <tr class="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">person_book</span>
+                                    </div>
+                                    <span class="font-bold text-slate-900 text-sm">Biography</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4"><span class="font-mono text-xs text-text-muted">87</span></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: 83%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.83</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-success rounded-full" style="width: 62%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.62</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-fear rounded-full" style="width: 70%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.70</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emo-anger rounded-full" style="width: 38%"></div></div>
+                                    <span class="text-xs font-mono text-text-muted">0.38</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emo-joy-subtle text-emo-joy text-[10px] font-bold rounded-full">😊 Joy</span>
+                            </td>
+                            <td class="px-6 py-4 text-right"><span class="text-error font-mono text-xs">-0.6%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
+                <p class="text-[11px] text-text-faint">Showing 8 of 20 genres · Minimum 5 books per genre for statistical validity</p>
+                <div class="flex items-center gap-2">
+                    <button class="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Previous</button>
+                    <button class="px-3 py-1.5 text-xs font-semibold text-white bg-primary rounded-lg hover:bg-primary-hover transition-colors">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- FOOTER INSIGHT BAR                      -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="mt-8 bg-gradient-to-r from-primary/5 via-emo-fear/5 to-emo-surprise/5 border border-slate-200 rounded-xl p-6 flex items-center gap-6">
+            <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-2xl text-primary filled">psychology</span>
+            </div>
+            <div class="flex-1">
+                <h4 class="text-sm font-bold text-text-primary mb-1">AI Insight for Thriller</h4>
+                <p class="text-sm text-text-muted leading-relaxed">
+                    This genre ranks <span class="font-bold text-primary">#2 in Engagement Depth</span> and <span class="font-bold text-primary">#1 in Viral Potential</span> across your entire database. 
+                    Its high Fear + Surprise emotion profile correlates strongly with review conversion rates — readers who experience controlled anxiety are 
+                    <span class="font-bold text-text-primary">2.3× more likely</span> to write a review than the database average.
+                </p>
+            </div>
+            <button class="flex-shrink-0 px-4 py-2 bg-white border border-slate-200 text-sm font-semibold text-slate-700 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-sm">auto_awesome</span>
+                Full AI Report
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════ -->
+        <!-- PAGE BOTTOM SPACER                      -->
+        <!-- ═══════════════════════════════════════ -->
+        <div class="h-8"></div>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- JAVASCRIPT                               -->
+    <!-- ═══════════════════════════════════════ -->
+    <script>
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('genre-dropdown');
+            const trigger = dropdown?.previousElementSibling;
+            if (dropdown && !dropdown.contains(e.target) && !trigger?.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Scroll anchor tab highlighting
+        const sections = ['kpi-section', 'emotion-section', 'sentiment-section', 'matrix-section'];
+        const navTabs = document.querySelectorAll('header nav a');
+
+        function updateActiveTab() {
+            let current = '';
+            sections.forEach(id => {
+                const section = document.getElementById(id);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 120) {
+                        current = id;
+                    }
+                }
+            });
+
+            navTabs.forEach((tab, i) => {
+                if (sections[i] === current) {
+                    tab.classList.remove('text-slate-500');
+                    tab.classList.add('bg-white', 'shadow-sm', 'text-primary');
+                } else {
+                    tab.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+                    tab.classList.add('text-slate-500');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveTab);
+        updateActiveTab();
+
+        // Genre pill click handler (visual toggle only for demo)
+        document.querySelectorAll('.genre-pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                document.querySelectorAll('.genre-pill').forEach(p => {
+                    p.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'font-semibold');
+                    p.classList.add('text-slate-500', 'font-medium');
+                    // Reset inner book count color
+                    const count = p.querySelector('span.font-mono');
+                    if (count) {
+                        count.classList.remove('text-white/70');
+                        count.classList.add('text-slate-400');
+                    }
+                    // Reset dot color
+                    const dot = p.querySelector('span.rounded-full');
+                    if (dot && dot.classList.contains('bg-white/60')) {
+                        dot.classList.remove('bg-white/60');
+                        dot.classList.add('bg-emo-fear'); // fallback
+                    }
+                });
+
+                this.classList.remove('text-slate-500', 'font-medium');
+                this.classList.add('bg-primary', 'text-white', 'shadow-sm', 'font-semibold');
+                const count = this.querySelector('span.font-mono');
+                if (count) {
+                    count.classList.remove('text-slate-400');
+                    count.classList.add('text-white/70');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+                
