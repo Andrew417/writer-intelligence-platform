@@ -3,472 +3,489 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Book Insights - The Midnight Library</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;900&amp;family=IBM+Plex+Mono:wght@400;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface": "#FFFFFF",
-                        "on-tertiary-container": "#ffd2be",
-                        "error-text": "#9F1239",
-                        "on-tertiary-fixed": "#351000",
-                        "surface-bright": "#fcf8ff",
-                        "primary-subtle": "#EEF2FF",
-                        "tertiary-fixed": "#ffdbcc",
-                        "success-subtle": "#D1FAE5",
-                        "primary-muted": "#C7D2FE",
-                        "surface-container-lowest": "#ffffff",
-                        "success": "#10B981",
-                        "warning-subtle": "#FEF3C7",
-                        "text-faint": "#94A3B8",
-                        "chart-1": "#4F46E5",
-                        "secondary-container": "#6cf8bb",
-                        "surface-container-highest": "#e4e1ee",
-                        "surface-container-low": "#f5f2ff",
-                        "on-primary": "#ffffff",
-                        "chart-4": "#8B5CF6",
-                        "error-container": "#ffdad6",
-                        "border-strong": "#CBD5E1",
-                        "text-secondary": "#334155",
-                        "chart-3": "#F59E0B",
-                        "on-primary-fixed-variant": "#3323cc",
-                        "on-background": "#1b1b24",
-                        "secondary-fixed": "#6ffbbe",
-                        "text-muted": "#64748B",
-                        "tertiary": "#7e3000",
-                        "secondary-fixed-dim": "#4edea3",
-                        "chart-5": "#EC4899",
-                        "surface-dim": "#dcd8e5",
-                        "primary-container": "#4f46e5",
-                        "tertiary-fixed-dim": "#ffb695",
-                        "tertiary-container": "#a44100",
-                        "surface-tint": "#4d44e3",
-                        "on-error-container": "#93000a",
-                        "inverse-surface": "#302f39",
-                        "surface-raised": "#F1F5F9",
-                        "on-secondary": "#ffffff",
-                        "border": "#E2E8F0",
-                        "on-primary-fixed": "#0f0069",
-                        "primary-hover": "#4338CA",
-                        "on-secondary-fixed-variant": "#005236",
-                        "inverse-primary": "#c3c0ff",
-                        "on-tertiary-fixed-variant": "#7b2f00",
-                        "text-primary": "#0F172A",
-                        "on-secondary-container": "#00714d",
-                        "secondary": "#006c49",
-                        "canvas": "#F8FAFC",
-                        "surface-variant": "#e4e1ee",
-                        "surface-container-high": "#eae6f4",
-                        "on-tertiary": "#ffffff",
-                        "primary": "#3525cd",
-                        "warning": "#F59E0B",
-                        "on-secondary-fixed": "#002113",
-                        "outline": "#777587",
-                        "background": "#fcf8ff",
-                        "success-text": "#065F46",
-                        "error-subtle": "#FFE4E6",
-                        "on-error": "#ffffff",
-                        "on-primary-container": "#dad7ff",
-                        "primary-fixed-dim": "#c3c0ff",
-                        "surface-container": "#f0ecf9",
-                        "chart-2": "#10B981",
-                        "warning-text": "#78350F",
-                        "on-surface-variant": "#464555",
-                        "primary-fixed": "#e2dfff",
-                        "inverse-on-surface": "#f3effc",
-                        "outline-variant": "#c7c4d8",
-                        "on-surface": "#1b1b24",
-                        "error": "#F43F5E"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "compact": "16px",
-                        "page": "32px",
-                        "nav-y": "10px",
-                        "base": "4px",
-                        "grid-gap": "20px",
-                        "nav-x": "12px",
-                        "inline": "8px",
-                        "card": "24px"
-                    },
-                    "fontFamily": {
-                        "display": ["'IBM Plex Sans'", "Inter"],
-                        "body-strong": ["'IBM Plex Sans'", "Inter"],
-                        "kpi-value": ["'IBM Plex Mono'", "Monospace"],
-                        "body": ["'IBM Plex Sans'", "Inter"],
-                        "card-title": ["'IBM Plex Sans'", "Inter"],
-                        "mono-hint": ["'IBM Plex Mono'", "Monospace"],
-                        "caption": ["'IBM Plex Sans'", "Inter"],
-                        "nav-label": ["'IBM Plex Sans'", "Inter"],
-                        "heading-section": ["'IBM Plex Sans'", "Inter"]
-                    },
-                    "fontSize": {
-                        "display": ["28px", { "lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "700" }],
-                        "body-strong": ["14px", { "lineHeight": "1.6", "fontWeight": "500" }],
-                        "kpi-value": ["32px", { "lineHeight": "1.0", "letterSpacing": "-0.04em", "fontWeight": "700" }],
-                        "body": ["14px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "card-title": ["15px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                        "mono-hint": ["11px", { "lineHeight": "1.0", "fontWeight": "400" }],
-                        "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
-                        "nav-label": ["13px", { "lineHeight": "1.0", "fontWeight": "500" }],
-                        "heading-section": ["20px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600" }]
-                    }
-                }
-            }
-        }
-    </script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "on-error-container": "#93000a",
+                  "outline": "#777587",
+                  "surface": "#FFFFFF",
+                  "outline-variant": "#c7c4d8",
+                  "on-secondary": "#ffffff",
+                  "tertiary-fixed-dim": "#ffb695",
+                  "surface-container": "#f0ecf9",
+                  "on-tertiary": "#ffffff",
+                  "chart-4": "#8B5CF6",
+                  "surface-dim": "#dcd8e5",
+                  "success-text": "#065F46",
+                  "on-secondary-fixed-variant": "#005236",
+                  "inverse-surface": "#302f39",
+                  "primary-hover": "#4338CA",
+                  "chart-1": "#4F46E5",
+                  "on-primary-container": "#dad7ff",
+                  "error-subtle": "#FFE4E6",
+                  "on-background": "#1b1b24",
+                  "surface-container-lowest": "#ffffff",
+                  "secondary": "#006c49",
+                  "tertiary-fixed": "#ffdbcc",
+                  "primary-subtle": "#EEF2FF",
+                  "inverse-primary": "#c3c0ff",
+                  "surface-container-low": "#f5f2ff",
+                  "on-tertiary-fixed": "#351000",
+                  "success-subtle": "#D1FAE5",
+                  "primary-fixed-dim": "#c3c0ff",
+                  "background": "#fcf8ff",
+                  "error-text": "#9F1239",
+                  "secondary-fixed-dim": "#4edea3",
+                  "warning-text": "#78350F",
+                  "on-tertiary-fixed-variant": "#7b2f00",
+                  "on-error": "#ffffff",
+                  "primary-muted": "#C7D2FE",
+                  "tertiary": "#7e3000",
+                  "error": "#F43F5E",
+                  "primary-container": "#4f46e5",
+                  "primary": "#3525cd",
+                  "on-secondary-fixed": "#002113",
+                  "surface-raised": "#F1F5F9",
+                  "warning": "#F59E0B",
+                  "text-secondary": "#334155",
+                  "surface-variant": "#e4e1ee",
+                  "border-strong": "#CBD5E1",
+                  "chart-2": "#10B981",
+                  "border": "#E2E8F0",
+                  "text-muted": "#64748B",
+                  "success": "#10B981",
+                  "warning-subtle": "#FEF3C7",
+                  "surface-container-high": "#eae6f4",
+                  "secondary-fixed": "#6ffbbe",
+                  "on-surface-variant": "#464555",
+                  "chart-5": "#EC4899",
+                  "surface-container-highest": "#e4e1ee",
+                  "surface-tint": "#4d44e3",
+                  "on-surface": "#1b1b24",
+                  "text-primary": "#0F172A",
+                  "on-primary-fixed-variant": "#3323cc",
+                  "error-container": "#ffdad6",
+                  "chart-3": "#F59E0B",
+                  "surface-bright": "#fcf8ff",
+                  "on-tertiary-container": "#ffd2be",
+                  "secondary-container": "#6cf8bb",
+                  "on-primary": "#ffffff",
+                  "tertiary-container": "#a44100",
+                  "inverse-on-surface": "#f3effc",
+                  "on-secondary-container": "#00714d",
+                  "canvas": "#F8FAFC",
+                  "on-primary-fixed": "#0f0069",
+                  "primary-fixed": "#e2dfff",
+                  "text-faint": "#94A3B8"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "nav-x": "12px",
+                  "inline": "8px",
+                  "base": "4px",
+                  "grid-gap": "20px",
+                  "compact": "16px",
+                  "page": "32px",
+                  "nav-y": "10px",
+                  "card": "24px"
+          },
+          "fontFamily": {
+                  "kpi-value": ["Monospace"],
+                  "nav-label": ["Inter"],
+                  "card-title": ["Inter"],
+                  "caption": ["Inter"],
+                  "mono-hint": ["Monospace"],
+                  "body-strong": ["Inter"],
+                  "heading-section": ["Inter"],
+                  "display": ["Inter"],
+                  "body": ["Inter"]
+          },
+          "fontSize": {
+                  "kpi-value": ["32px", {"lineHeight": "1.0", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                  "nav-label": ["13px", {"lineHeight": "1.0", "fontWeight": "500"}],
+                  "card-title": ["15px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                  "mono-hint": ["11px", {"lineHeight": "1.0", "fontWeight": "400"}],
+                  "body-strong": ["14px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                  "heading-section": ["20px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "display": ["28px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+                  "body": ["14px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
 <style>
-        .nav-item-active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 6px;
-            bottom: 6px;
-            width: 3px;
-            background: #4F46E5;
-            border-radius: 0 2px 2px 0;
-        }
-    </style>
+    body { background-color: #F8FAFC; color: #1B1B24; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+    .glass-header { backdrop-filter: blur(8px); }
+  </style>
 </head>
-<body class="bg-canvas text-on-surface min-h-screen font-body text-body selection:bg-primary-subtle selection:text-primary-container flex">
-<!-- SideNavBar -->
-<nav class="fixed left-0 top-0 h-full w-[250px] border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 z-50 hidden md:flex flex-col py-6 gap-2">
-<div class="mb-6 px-6 flex items-center gap-2.5">
-<div class="w-7 h-7 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-white text-[18px]">sparkles</span>
+<body class="font-body text-body bg-slate-50">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-[250px] border-r border-slate-200 bg-slate-50 p-4 flex flex-col gap-2 z-50">
+<div class="flex items-center gap-3 px-2 mb-8">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-lg">insights</span>
 </div>
-<div>
-<h1 class="text-[17px] font-bold tracking-tight text-slate-900 dark:text-white leading-none">PubIntel</h1>
-<p class="text-[10px] font-semibold tracking-widest text-slate-400 uppercase mt-1">Editorial Analytics</p>
+<span class="text-xl font-bold text-slate-900">InsightFlow</span>
 </div>
-</div>
-<div class="flex-1 px-3 space-y-0.5">
-<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-150 active:scale-[0.98]" href="#">
-<span class="material-symbols-outlined text-[18px] stroke-[1.75]">dashboard</span>
-            Dashboard
-        </a>
-<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium bg-indigo-50 dark:bg-slate-800/50 text-indigo-600 dark:text-indigo-400 nav-item-active active:scale-[0.98]" href="#">
-<span class="material-symbols-outlined text-[18px] stroke-[1.75]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
-            Book Insights
-        </a>
-<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-150 active:scale-[0.98]" href="#">
-<span class="material-symbols-outlined text-[18px] stroke-[1.75]">analytics</span>
-            Genre Analysis
-        </a>
-<a class="group relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-150 active:scale-[0.98]" href="#">
-<span class="material-symbols-outlined text-[18px] stroke-[1.75]">trending_up</span>
-            Market Trends
-        </a>
-</div>
-<div class="mt-auto border-t border-slate-100 dark:border-slate-800">
-<div class="flex items-center gap-3 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors group">
-<div class="w-8 h-8 rounded-full bg-indigo-50 dark:bg-slate-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xs shrink-0">SC</div>
-<div class="flex-1 min-w-0">
-<p class="text-[13px] font-medium text-slate-900 dark:text-white leading-tight truncate">Sarah Chen</p>
-<span class="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 tracking-wide">PRO PLAN</span>
-</div>
-</div>
-</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white text-indigo-600 border-r-2 border-indigo-600 shadow-sm transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-nav-label text-nav-label">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-nav-label text-nav-label">Book Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined">mood</span>
+<span class="font-nav-label text-nav-label">Sentiment</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-nav-label text-nav-label">Virality</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-nav-label text-nav-label">Settings</span>
+</a>
 </nav>
+<div class="mt-auto px-2">
+<button class="w-full bg-primary text-white py-2 px-4 rounded-lg font-body-strong text-body-strong shadow-sm hover:bg-primary-hover transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+        New Analysis
+      </button>
+</div>
+</aside>
 <!-- Main Content Area -->
-<main class="flex-1 ml-0 md:ml-[250px] min-h-screen pb-page">
-<!-- TopAppBar -->
-<header class="fixed top-0 right-0 w-full md:w-[calc(100%-250px)] h-16 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-8">
-<div class="flex items-center gap-6">
-<nav class="hidden md:flex items-center gap-6">
-<a class="font-['IBM_Plex_Sans'] text-sm tracking-tight text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 pb-[22px] pt-6 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500/20 font-semibold" href="#">Overview</a>
-<a class="font-['IBM_Plex_Sans'] text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors pb-[22px] pt-6 focus:ring-2 focus:ring-indigo-500/20" href="#">Demographics</a>
-<a class="font-['IBM_Plex_Sans'] text-sm tracking-tight text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors pb-[22px] pt-6 focus:ring-2 focus:ring-indigo-500/20" href="#">Sentiment</a>
+<main class="ml-[250px] min-h-screen">
+<!-- Top Bar -->
+<header class="fixed top-0 right-0 left-[250px] h-16 glass-header bg-white/85 border-b border-slate-200 z-40 flex items-center justify-between px-8">
+<div class="flex items-center gap-8">
+<span class="text-lg font-semibold text-slate-900">Book Insights</span>
+<nav class="flex gap-6">
+<a class="text-indigo-600 border-b-2 border-indigo-600 pb-5 pt-5 font-nav-label text-nav-label" href="#">Reports</a>
+<a class="text-slate-500 hover:text-indigo-500 font-nav-label text-nav-label transition-colors" href="#">History</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
-<div class="relative hidden sm:block">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-faint text-[18px]">search</span>
-<input class="pl-9 pr-4 py-1.5 bg-slate-50 border border-transparent rounded-lg text-sm focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all w-64 font-body placeholder:text-text-faint outline-none" placeholder="Search insights... (⌘K)" type="text"/>
+<div class="relative group">
+<input class="bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-1.5 text-sm focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 outline-none w-64 transition-all" placeholder="Search insights..." type="text"/>
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-slate-400 text-lg">search</span>
+<span class="absolute right-2.5 top-2.5 font-mono-hint text-mono-hint text-slate-400 bg-slate-200/50 px-1 rounded">⌘K</span>
 </div>
-<div class="flex items-center gap-2">
-<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px]">notifications</span>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
 </button>
-<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px]">settings</span>
-</button>
-<button class="ml-2 bg-indigo-600 text-white px-4 py-1.5 rounded-lg font-body-strong text-body-strong hover:bg-indigo-700 transition-colors shadow-sm hidden sm:block">
-                        Export Report
-                    </button>
-</div>
+<img alt="Analyst Avatar" class="w-8 h-8 rounded-full border border-slate-200" data-alt="professional profile headshot of a woman analyst clean studio lighting minimal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC6h4hsj13sXGeptjHRoVjDeB2WDF9Rd3rNMWLNwdswyCIj30Ic1XwDfAORK-m3_lmpyhDOtxObE7VglZQLyCH4hZc1SrQcv6VFA0gTfgNJp4NNro6SxGXQ8Y3mo2fU0yClzcUKzyd4R0B8M2BliPfk6crrtyMrTZcK_Gbct_M_VUXGk3Okj-t6fwQCKPQ_fEvqQExoMP4GJm-9qyTsCwK8ffqC9xzgSWhkwIJA8bhtTvbmV7N71wl0cjmpQ3FNpvp98BMdzOGlLH0"/>
 </div>
 </header>
-<!-- Page Content Canvas -->
-<div class="pt-24 px-page max-w-[1280px] mx-auto">
-<!-- Breadcrumb & Header -->
-<div class="mb-8">
-<a class="flex items-center gap-1 text-text-muted hover:text-text-primary transition-colors font-body text-xs mb-4 w-max group" href="#">
-<span class="material-symbols-outlined text-[14px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
-                    Back to Dashboard
-                </a>
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-<div>
-<div class="flex items-center gap-3 mb-2">
-<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-secondary font-caption text-[11px] font-medium uppercase tracking-wider">Sci-Fi / Contemporary</span>
-<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-text-secondary font-caption text-[11px] font-medium tracking-wider">Pub: Aug 2020</span>
-</div>
-<h1 class="font-display text-2xl font-bold tracking-tight text-text-primary mb-1">The Midnight Library</h1>
-<p class="font-body-strong text-sm font-medium text-text-secondary">by Matt Haig</p>
-</div>
+<!-- Page Content -->
+<div class="pt-24 pb-12 px-8 max-w-7xl mx-auto space-y-8">
+<!-- Selectbox Header -->
+<div class="flex flex-col gap-2">
+<label class="text-caption font-caption text-slate-500 ml-1">Select Analysis Profile</label>
+<div class="max-w-md bg-white border border-slate-200 rounded-lg px-4 py-2.5 flex items-center justify-between shadow-sm cursor-pointer hover:border-indigo-300 transition-colors">
 <div class="flex items-center gap-3">
-<button class="flex items-center gap-2 px-4 py-2 bg-surface text-text-primary border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm font-body-strong text-sm font-medium">
-<span class="material-symbols-outlined text-[18px]">compare_arrows</span>
-                            Compare
-                        </button>
-<button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-body-strong text-sm font-medium">
-<span class="material-symbols-outlined text-[18px]">add</span>
-                            Track Book
-                        </button>
+<span class="material-symbols-outlined text-slate-400">book</span>
+<span class="text-body-strong font-body-strong text-slate-900">Gone Girl — Gillian Flynn</span>
+</div>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</div>
+</div>
+<!-- Hero Card: Bento Style -->
+<section class="grid grid-cols-12 gap-grid-gap">
+<div class="col-span-12 lg:col-span-8 bg-white rounded-xl p-card border border-slate-200 shadow-sm flex items-start gap-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8">
+<div class="flex flex-col items-end">
+<span class="text-caption font-caption text-slate-400 uppercase tracking-wider mb-1">Standout Performance</span>
+<div class="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg border border-indigo-100">
+<span class="text-body-strong font-body-strong">Best in: Thriller (1.15x)</span>
 </div>
 </div>
 </div>
-<!-- KPI Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-grid-gap mb-8">
-<!-- KPI 1: Rating -->
-<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm hover:-translate-y-[1px] transition-all">
-<div class="flex justify-between items-start mb-4">
-<h3 class="font-card-title text-[15px] font-semibold text-text-secondary">Reader Rating</h3>
-<span class="flex items-center gap-1 text-success font-body-strong text-[12px] bg-success-subtle px-2 py-0.5 rounded-full font-medium">
-<span class="material-symbols-outlined text-[14px]">trending_up</span>
-                            +5%
-                        </span>
+<div class="w-40 h-60 shrink-0 bg-slate-100 rounded-lg shadow-md overflow-hidden relative group">
+<img class="w-full h-full object-cover" data-alt="modern minimalist book cover design for Gone Girl noir aesthetic dark moody typography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9fApCGsMFxJkLXXhcGaIu60_DPsqO8EnIQ3-3LDbDOd21YNcmTrFb0FHVcIgIqVPZszJaYFs02xaFgC0w_UAV2WoMSC-qWelp1VGXGRqc1hkzAF7TnwpTnFyBBKZXPuq8vf2dLFc5mc5_xdyUqYyjo84019lDltV7Owv6xgkaYvgUbKNqpr21s7_Aca8XbkotmmlppSyY5iLFRouqSoj5npbXWF6mrdbb-VaK9oxwKBuCzaH4QB1xPejGJpNOSoMUfcGgcLb7V0B0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
 </div>
-<div class="flex items-baseline gap-2 mb-2">
-<span class="font-kpi-value text-4xl font-bold tracking-tight text-text-primary">4.2</span>
-<span class="text-text-muted font-body-strong text-lg text-slate-400">/ 5.0</span>
-</div>
-<div class="flex items-center gap-3">
-<div class="flex text-warning">
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined text-[18px]">star_half</span>
-</div>
-<span class="text-text-muted font-caption text-xs">14,302 reviews</span>
-</div>
-</div>
-<!-- KPI 2: Engagement -->
-<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm hover:-translate-y-[1px] transition-all">
-<div class="flex justify-between items-start mb-4">
-<h3 class="font-card-title text-[15px] font-semibold text-text-secondary">Engagement Depth</h3>
-<span class="material-symbols-outlined text-text-muted text-[20px]">menu_book</span>
-</div>
-<div class="flex items-baseline gap-2 mb-3">
-<span class="font-kpi-value text-4xl font-bold tracking-tight text-text-primary">84%</span>
-<span class="text-text-muted font-body-strong text-lg text-slate-400">completion</span>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
-<div class="bg-emerald-500 h-2 rounded-full w-[84%]"></div>
-</div>
-<p class="text-success-text font-caption text-xs flex items-center gap-1 font-medium">
-<span class="material-symbols-outlined text-[14px]">check_circle</span>
-                        High reader retention
-                    </p>
-</div>
-<!-- KPI 3: Viral Potential -->
-<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm hover:-translate-y-[1px] transition-all">
-<div class="flex justify-between items-start mb-4">
-<h3 class="font-card-title text-[15px] font-semibold text-text-secondary">Viral Potential</h3>
-<span class="px-2 py-0.5 rounded-full bg-success-subtle text-success-text text-[10px] font-bold tracking-widest uppercase">HIGH</span>
-</div>
-<div class="flex items-baseline gap-2 mb-3">
-<span class="font-kpi-value text-4xl font-bold tracking-tight text-text-primary">92</span>
-<span class="text-text-muted font-body-strong text-lg text-slate-400">/ 100</span>
-</div>
-<p class="text-text-muted font-caption text-xs flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">share</span>
-                        Strong social mention context
-                    </p>
-</div>
-</div>
-<!-- Analytics Section -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-grid-gap mb-8">
-<!-- Sentiment Distribution -->
-<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm">
-<h3 class="font-heading-section text-xl font-semibold tracking-tight text-text-primary mb-6">Sentiment Distribution</h3>
 <div class="space-y-4">
-<!-- Positive -->
 <div>
-<div class="flex justify-between items-center mb-1">
-<span class="font-body-strong text-sm font-medium text-text-secondary flex items-center gap-2">
-<div class="w-3 h-3 rounded-full bg-emerald-500"></div> Positive
-                                </span>
-<span class="font-body-strong text-sm font-semibold text-text-primary">65%</span>
+<h1 class="text-display font-display text-slate-900">Gone Girl</h1>
+<p class="text-heading-section font-heading-section text-slate-500">Gillian Flynn</p>
 </div>
-<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-<div class="bg-emerald-500 h-2 rounded-full w-[65%]"></div>
+<div class="flex flex-wrap gap-2">
+<span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-caption font-caption">Thriller</span>
+<span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-caption font-caption">Mystery</span>
+<span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-caption font-caption">Fiction</span>
+</div>
+<div class="flex gap-3 pt-4">
+<div class="flex items-center gap-2 bg-chart-4/10 text-chart-4 px-3 py-1.5 rounded-lg border border-chart-4/20">
+<span class="material-symbols-outlined text-sm">psychology</span>
+<span class="text-body-strong font-body-strong">Fear (Dominant)</span>
+</div>
+<div class="flex items-center gap-2 bg-chart-2/10 text-chart-2 px-3 py-1.5 rounded-lg border border-chart-2/20">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="text-body-strong font-body-strong">Surprise</span>
+</div>
+<div class="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-100">
+<span class="material-symbols-outlined text-sm" data-weight="fill">trending_up</span>
+<span class="text-body-strong font-body-strong">High Viral Potential</span>
 </div>
 </div>
-<!-- Neutral -->
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-slate-900 text-white rounded-xl p-card flex flex-col justify-between shadow-xl">
 <div>
-<div class="flex justify-between items-center mb-1">
-<span class="font-body-strong text-sm font-medium text-text-secondary flex items-center gap-2">
-<div class="w-3 h-3 rounded-full bg-slate-400"></div> Neutral
-                                </span>
-<span class="font-body-strong text-sm font-semibold text-text-primary">20%</span>
+<div class="flex items-center justify-between mb-4">
+<span class="text-caption font-caption text-slate-400">Growth Index</span>
+<span class="text-emerald-400 text-body-strong font-body-strong flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">arrow_upward</span>
+                12.4%
+              </span>
 </div>
-<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-<div class="bg-slate-400 h-2 rounded-full w-[20%]"></div>
+<h3 class="text-heading-section font-heading-section mb-6">Audience Velocity</h3>
+<div class="space-y-4">
+<div class="flex items-end gap-2 h-24">
+<div class="flex-1 bg-indigo-500/20 rounded-t h-[40%]"></div>
+<div class="flex-1 bg-indigo-500/20 rounded-t h-[60%]"></div>
+<div class="flex-1 bg-indigo-500/20 rounded-t h-[45%]"></div>
+<div class="flex-1 bg-indigo-500/20 rounded-t h-[80%]"></div>
+<div class="flex-1 bg-indigo-500 rounded-t h-[95%]"></div>
+</div>
+<p class="text-caption font-caption text-slate-400">Strongest weekend performance since launch. Predicted peak in Q4.</p>
 </div>
 </div>
-<!-- Negative -->
+<button class="w-full border border-slate-700 hover:bg-slate-800 py-2.5 rounded-lg text-body-strong font-body-strong transition-colors mt-6">
+            Export Report
+          </button>
+</div>
+</section>
+<!-- Core KPIs -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-grid-gap">
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm space-y-4">
+<div class="flex justify-between items-start">
+<span class="text-caption font-caption text-slate-500 uppercase tracking-wide">True Satisfaction</span>
+<span class="material-symbols-outlined text-slate-400">verified</span>
+</div>
+<div class="space-y-1">
+<span class="text-kpi-value font-kpi-value text-slate-900">0.85</span>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-indigo-600 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm space-y-4">
+<div class="flex justify-between items-start">
+<span class="text-caption font-caption text-slate-500 uppercase tracking-wide">Engagement Depth</span>
+<span class="material-symbols-outlined text-slate-400">auto_graph</span>
+</div>
+<div class="space-y-1">
+<span class="text-kpi-value font-kpi-value text-slate-900">0.91</span>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-indigo-600 rounded-full" style="width: 91%"></div>
+</div>
+</div>
+</div>
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm space-y-4">
+<div class="flex justify-between items-start">
+<span class="text-caption font-caption text-slate-500 uppercase tracking-wide">Viral Potential</span>
+<span class="material-symbols-outlined text-slate-400">celebration</span>
+</div>
+<div class="space-y-1">
+<span class="text-kpi-value font-kpi-value text-slate-900">0.87</span>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 rounded-full" style="width: 87%"></div>
+</div>
+</div>
+</div>
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm space-y-4">
+<div class="flex justify-between items-start">
+<span class="text-caption font-caption text-slate-500 uppercase tracking-wide">Bang for Buck</span>
+<span class="material-symbols-outlined text-slate-400">payments</span>
+</div>
+<div class="space-y-1">
+<span class="text-kpi-value font-kpi-value text-slate-900">0.68</span>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-warning rounded-full" style="width: 68%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Tabbed Analysis Layout -->
+<section class="space-y-6">
+<div class="bg-slate-200/50 p-1 rounded-xl flex gap-1 w-fit">
+<button class="bg-white text-indigo-600 shadow-sm px-6 py-2 rounded-lg font-body-strong text-body-strong">Sentiment</button>
+<button class="text-slate-600 hover:text-slate-900 px-6 py-2 rounded-lg font-body-strong text-body-strong transition-colors">Emotions</button>
+<button class="text-slate-600 hover:text-slate-900 px-6 py-2 rounded-lg font-body-strong text-body-strong transition-colors">Ratings</button>
+<button class="text-slate-600 hover:text-slate-900 px-6 py-2 rounded-lg font-body-strong text-body-strong transition-colors">Viral Breakdown</button>
+</div>
+<!-- Tab Content: Active Tab (Sentiment Example) -->
+<div class="grid grid-cols-12 gap-grid-gap">
+<div class="col-span-12 lg:col-span-7 space-y-grid-gap">
+<!-- Sentiment Spectral -->
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+<h4 class="text-card-title font-card-title mb-6">Sentiment Spectrum</h4>
+<div class="relative h-12 w-full rounded-lg mb-4 flex overflow-hidden">
+<div class="h-full flex-1 bg-rose-500" style="width: 15%"></div>
+<div class="h-full flex-1 bg-rose-300" style="width: 10%"></div>
+<div class="h-full flex-1 bg-slate-200" style="width: 25%"></div>
+<div class="h-full flex-1 bg-emerald-300" style="width: 30%"></div>
+<div class="h-full flex-1 bg-emerald-600" style="width: 20%"></div>
+</div>
+<div class="flex justify-between text-caption font-caption text-slate-400">
+<span>Highly Negative</span>
+<span>Neutral</span>
+<span>Highly Positive</span>
+</div>
+</div>
+<!-- Sentiment Strength -->
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+<h4 class="text-card-title font-card-title mb-4">Sentiment Polar Strength</h4>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-body font-body">
+<span class="text-slate-600">Polarity Consistency</span>
+<span class="font-bold">78%</span>
+</div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-indigo-600 rounded-full transition-all" style="width: 78%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-5">
+<!-- Emotion Fingerprint Summary (Preview of Tab 2) -->
+<div class="bg-white p-card rounded-xl border border-slate-200 shadow-sm h-full flex flex-col justify-center items-center text-center space-y-4">
+<div class="text-6xl mb-2">😨</div>
 <div>
-<div class="flex justify-between items-center mb-1">
-<span class="font-body-strong text-sm font-medium text-text-secondary flex items-center gap-2">
-<div class="w-3 h-3 rounded-full bg-rose-500"></div> Negative
-                                </span>
-<span class="font-body-strong text-sm font-semibold text-text-primary">15%</span>
+<h3 class="text-heading-section font-heading-section text-slate-900">Fear Dominant</h3>
+<p class="text-body text-slate-500">Emotional complexity is exceptionally high for this genre.</p>
 </div>
-<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-<div class="bg-rose-500 h-2 rounded-full w-[15%]"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Reviewer Focus -->
-<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm">
-<h3 class="font-heading-section text-xl font-semibold tracking-tight text-text-primary mb-6">Reviewer Focus</h3>
-<div class="space-y-3">
-<!-- Radar Chart -->
-<div class="flex justify-center mb-6">
-<svg class="overflow-visible" height="240" viewbox="0 0 200 200" width="240">
-<!-- Labels -->
-<text class="text-[10px] font-medium fill-slate-500" text-anchor="middle" x="100" y="10">Characters</text>
-<text class="text-[10px] font-medium fill-slate-500" text-anchor="start" x="185" y="80">Pacing</text>
-<text class="text-[10px] font-medium fill-slate-500" text-anchor="start" x="150" y="175">Plot</text>
-<text class="text-[10px] font-medium fill-slate-500" text-anchor="end" x="50" y="175">World-building</text>
-<text class="text-[10px] font-medium fill-slate-500" text-anchor="end" x="15" y="80">Writing Style</text>
-<!-- Grid Lines (Pentagons) -->
-<polygon fill="none" points="100,20 176.1,75.3 147.0,164.7 53.0,164.7 23.9,75.3" stroke="#F1F5F9" stroke-width="1"></polygon>
-<polygon fill="none" points="100,40 157.1,81.5 135.3,148.5 64.7,148.5 42.9,81.5" stroke="#F1F5F9" stroke-width="1"></polygon>
-<polygon fill="none" points="100,60 138.0,87.6 123.5,132.4 76.5,132.4 62.0,87.6" stroke="#F1F5F9" stroke-width="1"></polygon>
-<polygon fill="none" points="100,80 119.0,93.8 111.8,116.2 88.2,116.2 81.0,93.8" stroke="#F1F5F9" stroke-width="1"></polygon>
-<!-- Axis Lines -->
-<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="100" y1="100" y2="20"></line>
-<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="176.1" y1="100" y2="75.3"></line>
-<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="147.0" y1="100" y2="164.7"></line>
-<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="53.0" y1="100" y2="164.7"></line>
-<line stroke="#F1F5F9" stroke-width="1" x1="100" x2="23.9" y1="100" y2="75.3"></line>
-<!-- Data Polygon -->
-<polygon fill="#4f46e5" fill-opacity="0.12" points="100,29.6 141.1,86.7 138.6,153.1 85.4,120.1 39.9,80.5" stroke="#4f46e5" stroke-width="2"></polygon>
-<!-- Data Points -->
-<circle cx="100" cy="29.6" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
-<circle cx="141.1" cy="86.7" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
-<circle cx="138.6" cy="153.1" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
-<circle cx="85.4" cy="120.1" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
-<circle cx="39.9" cy="80.5" fill="#ffffff" r="4" stroke="#4f46e5" stroke-width="2"></circle>
+<div class="w-48 h-48 relative flex items-center justify-center">
+<!-- SVG Gauge -->
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-slate-100" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-chart-4" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502" stroke-dashoffset="150" stroke-width="12"></circle>
 </svg>
-</div>
-<!-- Dimension Rows -->
-<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
-<div class="flex items-center justify-between mb-1">
-<span class="font-body text-sm text-text-secondary font-medium">Characters</span>
-<div class="flex items-center gap-3">
-<span class="font-body text-xs text-text-primary font-semibold">88</span>
-<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-medium tracking-wide w-16 text-center">HIGH</span>
-</div>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 88%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
-<div class="flex items-center justify-between mb-1">
-<span class="font-body text-sm text-text-secondary font-medium">Pacing</span>
-<div class="flex items-center gap-3">
-<span class="font-body text-xs text-text-primary font-semibold">54</span>
-<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-medium tracking-wide w-16 text-center">MEDIUM</span>
-</div>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 54%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
-<div class="flex items-center justify-between mb-1">
-<span class="font-body text-sm text-text-secondary font-medium">Plot</span>
-<div class="flex items-center gap-3">
-<span class="font-body text-xs text-text-primary font-semibold">82</span>
-<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-medium tracking-wide w-16 text-center">HIGH</span>
-</div>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 82%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
-<div class="flex items-center justify-between mb-1">
-<span class="font-body text-sm text-text-secondary font-medium">World-building</span>
-<div class="flex items-center gap-3">
-<span class="font-body text-xs text-text-primary font-semibold">31</span>
-<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[11px] font-medium tracking-wide w-16 text-center">LOW</span>
-</div>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 31%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2 py-3 border-b border-slate-50 last:border-0">
-<div class="flex items-center justify-between mb-1">
-<span class="font-body text-sm text-text-secondary font-medium">Writing Style</span>
-<div class="flex items-center gap-3">
-<span class="font-body text-xs text-text-primary font-semibold">79</span>
-<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[11px] font-medium tracking-wide w-16 text-center">HIGH</span>
-</div>
-</div>
-<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-<div class="bg-indigo-500 h-1.5 rounded-full" style="width: 79%"></div>
+<div class="absolute inset-0 flex flex-col items-center justify-center transform rotate-0">
+<span class="text-kpi-value font-kpi-value">0.72</span>
+<span class="text-caption font-caption text-slate-400">Complexity Index</span>
 </div>
 </div>
 </div>
 </div>
 </div>
-<!-- Narrative & Trope Insights -->
-<div class="bg-surface rounded-xl p-6 border border-slate-200 shadow-sm mb-8">
-<h3 class="font-heading-section text-xl font-semibold tracking-tight text-text-primary mb-4">Narrative &amp; Trope Insights</h3>
-<div class="flex flex-wrap gap-2 mb-6">
-<div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
-<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-<span class="font-body text-xs font-medium text-emerald-800">Alternate Reality</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-100 rounded-full">
-<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-<span class="font-body text-xs font-medium text-emerald-800">Regret</span>
-</div>
-<div class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full">
-<div class="w-2 h-2 rounded-full bg-slate-400"></div>
-<span class="font-body text-xs font-medium text-slate-700">Mental Health</span>
+</section>
+<!-- Multi-Card Grid for Detailed Metrics (Tab 3 Preview) -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-grid-gap">
+<div class="bg-white p-compact rounded-xl border border-slate-200 shadow-sm space-y-3">
+<span class="text-caption font-caption text-slate-500 uppercase">Reader Rating</span>
+<div class="flex items-center justify-between">
+<span class="text-heading-section font-heading-section">4.2/5.0</span>
+<div class="w-24 h-1.5 bg-slate-100 rounded-full">
+<div class="h-full bg-indigo-500 rounded-full" style="width: 84%"></div>
 </div>
 </div>
-<h4 class="font-card-title text-[13px] font-semibold text-text-primary mb-3">Key Reader Takeaways</h4>
-<ul class="space-y-3">
-<li class="flex items-start gap-3 text-text-secondary font-body text-sm leading-relaxed">
-<div class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0"></div>
-                        Readers highly resonate with the philosophical exploration of choices and parallel lives.
-                    </li>
-<li class="flex items-start gap-3 text-text-secondary font-body text-sm leading-relaxed">
-<div class="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0"></div>
-                        The protagonist's emotional journey is frequently cited as relatable and deeply moving.
-                    </li>
-</ul>
 </div>
+<div class="bg-white p-compact rounded-xl border border-slate-200 shadow-sm space-y-3">
+<span class="text-caption font-caption text-slate-500 uppercase">Reviewer Engagement</span>
+<div class="flex items-center justify-between">
+<span class="text-heading-section font-heading-section">0.94</span>
+<div class="w-24 h-1.5 bg-slate-100 rounded-full">
+<div class="h-full bg-emerald-500 rounded-full" style="width: 94%"></div>
+</div>
+</div>
+</div>
+<div class="bg-white p-compact rounded-xl border border-slate-200 shadow-sm space-y-3">
+<span class="text-caption font-caption text-slate-500 uppercase">Chapter Retention</span>
+<div class="flex items-center justify-between">
+<span class="text-heading-section font-heading-section">0.77</span>
+<div class="w-24 h-1.5 bg-slate-100 rounded-full">
+<div class="h-full bg-indigo-500 rounded-full" style="width: 77%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Viral Breakdown (Tab 4 Preview) -->
+<section class="bg-white p-card rounded-xl border border-slate-200 shadow-sm">
+<h3 class="text-heading-section font-heading-section mb-6">Market Standout Analysis</h3>
+<div class="space-y-6">
+<div class="grid grid-cols-12 items-center gap-4">
+<span class="col-span-3 text-body text-slate-600">Thriller Genre</span>
+<div class="col-span-9 flex items-center gap-4">
+<div class="h-8 bg-emerald-500 rounded flex-1" style="width: 85%"></div>
+<span class="text-body-strong font-body-strong text-emerald-600">+1.15x</span>
+</div>
+</div>
+<div class="grid grid-cols-12 items-center gap-4">
+<span class="col-span-3 text-body text-slate-600">Mystery Core</span>
+<div class="col-span-9 flex items-center gap-4">
+<div class="h-8 bg-emerald-400 rounded flex-1" style="width: 70%"></div>
+<span class="text-body-strong font-body-strong text-emerald-600">+0.88x</span>
+</div>
+</div>
+<div class="grid grid-cols-12 items-center gap-4">
+<span class="col-span-3 text-body text-slate-600">Romance Crossover</span>
+<div class="col-span-9 flex items-center gap-4">
+<div class="h-8 bg-rose-400 rounded flex-1" style="width: 30%"></div>
+<span class="text-body-strong font-body-strong text-rose-600">-0.42x</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer AI Insight -->
+<footer class="bg-indigo-900 text-white p-6 rounded-xl shadow-lg flex items-start gap-6 border border-indigo-800">
+<div class="w-12 h-12 rounded-full bg-indigo-500/30 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white text-3xl">psychology</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="text-body-strong font-body-strong">PubIntel AI Assistant</span>
+<span class="bg-indigo-500/30 text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-widest">Live Insight</span>
+</div>
+<p class="text-indigo-100 leading-relaxed max-w-4xl">
+            "Gone Girl" exhibits a unique emotional profile where fear and surprise are synchronized at a 92% correlation rate during the third act. This "twist-locking" mechanic is the primary driver of its virality. Comparing it to contemporary thrillers, it ranks in the 99th percentile for reader discussion duration. Recommend doubling down on "unreliable narrator" marketing hooks for similar upcoming acquisitions.
+          </p>
+</div>
+</footer>
 </div>
 </main>
+<!-- Mobile Bottom Nav (Suppressed on MD+) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-indigo-600">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-bold">Stats</span>
+</button>
+<button class="w-12 h-12 bg-primary rounded-full text-white shadow-lg -mt-8 flex items-center justify-center">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">mood</span>
+<span class="text-[10px] font-bold">Mood</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-bold">Profile</span>
+</button>
+</div>
 </body></html>

@@ -7,5 +7,15 @@ def inject_styles():
         html, body, [class*="st-"] { font-family: 'Inter', sans-serif; }
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
+        :root, [data-theme="light"], [data-theme="light"] body {
+            --text-primary: #0F172A;
+            --text-muted: #64748B;
+            --text-value: #0F172A;
+        }
+        [data-theme="dark"], [data-theme="dark"] body {
+            --text-primary: #FFFFFF;
+            --text-muted: #94A3B8;
+            --text-value: #CBD5E1;
+        }
     </style>
     """, unsafe_allow_html=True)
