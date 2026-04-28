@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import pandas as pd
 from components.styles import inject_styles
 from components.data import get_all_genres, get_all_books
+
 # ═══════════════════════════════════════
 # 1. INITIALIZATION & SETUP
 # ═══════════════════════════════════════
@@ -11,7 +12,6 @@ inject_styles()
 # ═══════════════════════════════════════
 # 2. FETCH DATA FROM MONGODB
 # ═══════════════════════════════════════
-# Fetching from the database exactly as your teammate set it up
 try:
     genres_df = get_all_genres()
     books_df = get_all_books()
@@ -24,10 +24,17 @@ except Exception as e:
 # ═══════════════════════════════════════
 # Top KPIs
 total_books = len(books_df) if not books_df.empty else 0
-total_reviews = books_df['reviews'].sum() if 'reviews' in books_df.columns else 0
+
+# Safely check for reviews or review_count column
+if 'reviews' in books_df.columns:
+    total_reviews = books_df['reviews'].sum()
+elif 'review_count' in books_df.columns:
+    total_reviews = books_df['review_count'].sum()
+else:
+    total_reviews = 0
+
 genres_tracked = len(genres_df) if not genres_df.empty else 0
 
-# Format large numbers for the UI (e.g., 2,400,000 -> 2.4M)
 def format_large_number(num):
     if num >= 1_000_000:
         return f"{num/1_000_000:.1f}M"
@@ -37,15 +44,29 @@ def format_large_number(num):
 
 formatted_reviews = format_large_number(total_reviews)
 
-# Global Satisfaction (Assume a 5-star scale normalized to 0-1.0)
-avg_rating = books_df['rating'].mean() if 'rating' in books_df.columns else 3.4
-global_satisfaction = avg_rating / 5.0
-circle_offset = 364.4 - (364.4 * global_satisfaction) # Math for the SVG circle animation
+# Global Satisfaction
+avg_rating = books_df['normalized_rating'].mean() if 'normalized_rating' in books_df.columns else (books_df['rating'].mean() / 5.0 if 'rating' in books_df.columns else 0.68)
+global_satisfaction = avg_rating 
+circle_offset = 364.4 - (364.4 * global_satisfaction) 
+
+# --- DYNAMIC MARKET MOOD LOGIC ---
+if 'avg_review_emotion' in books_df.columns:
+    # Count occurrences and turn into percentages
+    emo_counts = books_df['avg_review_emotion'].value_counts(normalize=True) * 100
+    
+    emo1_name = emo_counts.index[0].capitalize() if len(emo_counts) > 0 else "Unknown"
+    emo1_pct = emo_counts.iloc[0] if len(emo_counts) > 0 else 0
+    
+    emo2_name = emo_counts.index[1].capitalize() if len(emo_counts) > 1 else "Unknown"
+    emo2_pct = emo_counts.iloc[1] if len(emo_counts) > 1 else 0
+else:
+    emo1_name, emo1_pct = "Data Missing", 0
+    emo2_name, emo2_pct = "Data Missing", 0
+
 
 # ═══════════════════════════════════════
 # 4. GENERATE LEADERBOARD ROWS
 # ═══════════════════════════════════════
-# Helper function to generate HTML rows for the leaderboards
 def build_leaderboard_html(df, sort_col, badge_text, badge_color_class, icon):
     html = ""
     top_4 = df.nlargest(4, sort_col) if sort_col in df.columns else pd.DataFrame()
@@ -54,7 +75,6 @@ def build_leaderboard_html(df, sort_col, badge_text, badge_color_class, icon):
         author = row.get('author', 'Unknown')
         score = row.get(sort_col, 0)
         
-        # Adjust formatting based on the column
         display_score = f"{score:.2f}" if score < 10 else f"{score:.0f}"
 
         html += f"""
@@ -69,12 +89,11 @@ def build_leaderboard_html(df, sort_col, badge_text, badge_color_class, icon):
         """
     return html
 
-# Ensure we have the fallback columns to prevent crashes if DB schema varies slightly
-viral_col = 'viral' if 'viral' in books_df.columns else 'rating'
-hgi_col = 'HGI' if 'HGI' in books_df.columns else 'rating'
+viral_col = 'viral' if 'viral' in books_df.columns else 'normalized_rating'
+hgi_col = 'HGI' if 'HGI' in books_df.columns else 'normalized_rating'
 
 trending_html = build_leaderboard_html(books_df, viral_col, "Viral Score", "bg-rose-100 text-rose-700", "trending_up")
-hall_of_fame_html = build_leaderboard_html(books_df, 'rating', "Rating", "bg-amber-100 text-amber-700", "star")
+hall_of_fame_html = build_leaderboard_html(books_df, 'true_satisfaction', "Satisfaction", "bg-amber-100 text-amber-700", "star")
 hidden_gems_html = build_leaderboard_html(books_df, hgi_col, "HGI Score", "bg-indigo-100 text-indigo-700", "verified")
 
 # ═══════════════════════════════════════
@@ -162,22 +181,22 @@ html_ui = f"""
                         <div class="flex items-center gap-4">
                             <div class="flex-1">
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="font-medium text-slate-700">Joy & Surprise</span>
-                                    <span class="text-sm font-mono font-bold text-primary">82%</span>
+                                    <span class="font-medium text-slate-700">{emo1_name}</span>
+                                    <span class="text-sm font-mono font-bold text-primary">{emo1_pct:.0f}%</span>
                                 </div>
                                 <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary rounded-full w-[82%]"></div>
+                                    <div class="h-full bg-primary rounded-full" style="width: {emo1_pct}%"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="flex-1">
                                 <div class="flex justify-between items-center mb-2 text-text-muted">
-                                    <span class="text-sm">Anticipation</span>
-                                    <span class="text-sm font-mono">64%</span>
+                                    <span class="text-sm">{emo2_name}</span>
+                                    <span class="text-sm font-mono">{emo2_pct:.0f}%</span>
                                 </div>
                                 <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-slate-300 rounded-full w-[64%]"></div>
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: {emo2_pct}%"></div>
                                 </div>
                             </div>
                         </div>
