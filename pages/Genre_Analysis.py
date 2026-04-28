@@ -5,6 +5,20 @@ from components.data import get_all_genres, get_genre_by_name, get_genre_names
 
 inject_styles()
 
+
+def fmt_percent(value):
+    try:
+        return f"{float(value) * 100:.0f}%"
+    except Exception:
+        return "0%"
+
+
+def fmt_percent_signed(value):
+    try:
+        return f"{float(value) * 100:+.0f}%"
+    except Exception:
+        return "+0%"
+
 # ═══════════════════════════════════════
 # FETCH DATA FROM MONGODB
 # ═══════════════════════════════════════
@@ -68,12 +82,12 @@ st.markdown(f"## {selected_genre}")
 st.caption(f"{genre_doc.get('total_books', 'N/A')} books · Dominant emotion: {dominant_color_info['icon']} {dominant_key.capitalize()}")
 
 k1, k2, k3, k4, k5, k6 = st.columns(6)
-k1.metric("Satisfaction",  f"{genre_doc.get('avg_satisfaction', 0):.2f}")
-k2.metric("Engagement",    f"{genre_doc.get('avg_engagement_depth', 0):.2f}")
-k3.metric("Value",         f"{genre_doc.get('avg_bang_for_buck', 0):.2f}")
-k4.metric("Hype",          f"{genre_doc.get('avg_viral_potential', 0):.2f}")
-k5.metric("Legacy",        f"{genre_doc.get('avg_timelessness', 0):.2f}")
-k6.metric("Complexity",    f"{genre_doc.get('avg_emotional_complexity', 0):.2f}")
+k1.metric("Satisfaction",  fmt_percent(genre_doc.get('avg_satisfaction', 0)))
+k2.metric("Engagement",    fmt_percent(genre_doc.get('avg_engagement_depth', 0)))
+k3.metric("Value",         fmt_percent(genre_doc.get('avg_bang_for_buck', 0)))
+k4.metric("Hype",          fmt_percent(genre_doc.get('avg_viral_potential', 0)))
+k5.metric("Legacy",        fmt_percent(genre_doc.get('avg_timelessness', 0)))
+k6.metric("Complexity",    fmt_percent(genre_doc.get('avg_emotional_complexity', 0)))
 
 st.markdown("---")
 
@@ -104,7 +118,7 @@ with emo_left:
             f'<div style="margin-bottom:14px;">'
             f'<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">'
             f'<span style="font-size:13px; font-weight:600; color:inherit;">{emo_name}{primary_badge}</span>'
-            f'<span style="font-family:ui-monospace,monospace; font-weight:700; color:{emo_data["color"]};">{emo_data["value"]:.2f}</span>'
+            f'<span style="font-family:ui-monospace,monospace; font-weight:700; color:{emo_data["color"]};">{fmt_percent(emo_data["value"])}</span>'
             f'</div>'
             f'<div style="width:100%; height:10px; border-radius:999px; overflow:hidden; background:{emo_data["bg"]};">'
             f'<div style="height:100%; width:{pct}%; border-radius:999px; background:{emo_data["color"]};"></div>'
@@ -138,7 +152,7 @@ with s1:
     st.markdown("### Sentiment")
     st.caption("The Positivity Metric")
     sentiment_val = genre_doc.get("avg_sentiment", 0)
-    st.metric("Score", f"{sentiment_val:+.2f}", label_visibility="collapsed")
+    st.metric("Score", fmt_percent_signed(sentiment_val), label_visibility="collapsed")
 
     # Use native progress bar for sentiment spectrum
     normalized = (sentiment_val + 1) / 2
@@ -154,13 +168,13 @@ with s2:
     st.markdown("### Sentiment Strength")
     st.caption("The Intensity Metric")
     strength_val = genre_doc.get("avg_sentiment_strength", 0)
-    st.metric("Score", f"{strength_val:.2f}", label_visibility="collapsed")
+    st.metric("Score", fmt_percent(strength_val), label_visibility="collapsed")
 
 with s3:
     st.markdown("### Emotional Complexity")
     st.caption("The Rollercoaster Metric")
     complexity_val = genre_doc.get("avg_emotional_complexity", 0)
-    st.metric("Score", f"{complexity_val:.2f}", label_visibility="collapsed")
+    st.metric("Score", fmt_percent(complexity_val), label_visibility="collapsed")
 
 st.markdown("---")
 
@@ -178,10 +192,10 @@ for _, row in all_genres_df.iterrows():
     matrix_data.append({
         "Genre": row.get("genres", ""),
         "Books": int(row.get("total_books", 0)),
-        "Satisfaction": round(row.get("avg_satisfaction", 0), 2),
-        "Engagement": round(row.get("avg_engagement_depth", 0), 2),
-        "Complexity": round(row.get("avg_emotional_complexity", 0), 2),
-        "Intensity": round(row.get("avg_sentiment_strength", 0), 2),
+        "Satisfaction": round(row.get("avg_satisfaction", 0) * 100, 0),
+        "Engagement": round(row.get("avg_engagement_depth", 0) * 100, 0),
+        "Complexity": round(row.get("avg_emotional_complexity", 0) * 100, 0),
+        "Intensity": round(row.get("avg_sentiment_strength", 0) * 100, 0),
         "Dominant": row.get("genre_dominant_emotion", "N/A").capitalize()
     })
 
@@ -198,10 +212,10 @@ st.dataframe(
     column_config={
         "Genre": st.column_config.TextColumn("Genre", width="medium"),
         "Books": st.column_config.NumberColumn("Books", width="small"),
-        "Satisfaction": st.column_config.ProgressColumn("Satisfaction", min_value=0, max_value=1, format="%.2f"),
-        "Engagement": st.column_config.ProgressColumn("Engagement", min_value=0, max_value=1, format="%.2f"),
-        "Complexity": st.column_config.ProgressColumn("Complexity", min_value=0, max_value=1, format="%.2f"),
-        "Intensity": st.column_config.ProgressColumn("Intensity", min_value=0, max_value=1, format="%.2f"),
+        "Satisfaction": st.column_config.ProgressColumn("Satisfaction", min_value=0, max_value=100, format="%.0f%%"),
+        "Engagement": st.column_config.ProgressColumn("Engagement", min_value=0, max_value=100, format="%.0f%%"),
+        "Complexity": st.column_config.ProgressColumn("Complexity", min_value=0, max_value=100, format="%.0f%%"),
+        "Intensity": st.column_config.ProgressColumn("Intensity", min_value=0, max_value=100, format="%.0f%%"),
         "Dominant": st.column_config.TextColumn("Dominant", width="small"),
     }
 )
@@ -230,5 +244,5 @@ with insight_col2:
     best_metric = max(metrics, key=metrics.get)
     best_value = metrics[best_metric]
     st.markdown(
-        f"This genre's strongest dimension is **{best_metric}** at **{best_value:.2f}**. Its dominant emotion is **{dominant_key.capitalize()}**, derived from NLP analysis of reader reviews across **{genre_doc.get('total_books', 0)} books** in the database."
+        f"This genre's strongest dimension is **{best_metric}** at **{fmt_percent(best_value)}**. Its dominant emotion is **{dominant_key.capitalize()}**, derived from NLP analysis of reader reviews across **{genre_doc.get('total_books', 0)} books** in the database."
     )
