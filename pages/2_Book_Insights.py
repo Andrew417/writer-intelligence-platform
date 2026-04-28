@@ -577,13 +577,19 @@ with tab4:
             pct = max(0, min(100, float(val) * 100))
         except Exception:
             pct = 0
+        if pct >= 67:
+            bar_color = "#10B981"
+        elif pct >= 34:
+            bar_color = "#F59E0B"
+        else:
+            bar_color = "#94A3B8"
         breakdown_html += (
             f'<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">'
             f'<div style="width:30%; color:#94A3B8;">{name} ({int(weight*100)}%)</div>'
             f'<div style="width:65%; background:#0B1220; border-radius:999px; overflow:hidden;">'
-            f'<div style="height:12px; width:{pct}%; background:#10B981;"></div>'
+            f'<div style="height:12px; width:{pct}%; background:{bar_color};"></div>'
             f'</div>'
-            f'<div style="width:5%; text-align:right; font-family:ui-monospace,monospace;">{fmt(val)}</div>'
+            f'<div style="width:5%; text-align:right; font-family:ui-monospace,monospace;">{pct:.0f}%</div>'
             f'</div>'
         )
     st.markdown(breakdown_html, unsafe_allow_html=True)
@@ -596,7 +602,7 @@ with tab4:
         g = item.get("genre")
         score = item.get("standout_score", 0)
         color = "#10B981" if score > 1.0 else ("#94A3B8" if abs(score-1.0) < 1e-6 else "#EF4444")
-        width = max(0, min(100, score * 50))  # scale for display
+        width = max(0, min(100, (score / 2) * 100))  # normalize to 0-2 scale
         star = " ⭐" if f"{g}:" in (book.get("top_genre_standout_score") or "") else ""
         shtml += (
             f'<div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">'
