@@ -2,8 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 from components.styles import inject_styles
-from components.data import get_all_genres, get_all_books_for_search 
-
+from components.data import get_all_genres, get_all_books
 # ═══════════════════════════════════════
 # 1. INITIALIZATION & SETUP
 # ═══════════════════════════════════════
