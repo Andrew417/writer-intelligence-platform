@@ -140,13 +140,13 @@ with filter_col2:
     sort_by = st.selectbox(
         "Sort",
         options=[
+            "Rating Count ↓",
             "Title (A-Z)",
             "True Satisfaction ↓",
             "Engagement Depth ↓",
             "Viral Potential ↓",
             "Bang for Buck ↓",
-            "Timelessness ↓",
-            "Rating Count ↓"
+            "Timelessness ↓"
         ],
         label_visibility="collapsed"
     )
@@ -184,7 +184,7 @@ sort_map = {
     "Timelessness ↓": ("normalized_timelessness", False),
     "Rating Count ↓": ("rating_count", False),
 }
-sort_col, sort_asc = sort_map.get(sort_by, ("title", True))
+sort_col, sort_asc = sort_map.get(sort_by, ("rating_count", False))
 if sort_col in filtered_df.columns:
     try:
         filtered_df = filtered_df.sort_values(sort_col, ascending=sort_asc).reset_index(drop=True)
