@@ -242,6 +242,23 @@ raw_stats = (
 )
 
 top_standout = book.get("top_genre_standout_score") or ""
+top_standout_display = top_standout
+if top_standout:
+    parts = top_standout.split(":", 2)
+    if len(parts) == 2:
+        standout_genre = parts[0].strip()
+        try:
+            standout_score = float(parts[1])
+        except Exception:
+            standout_score = None
+        if standout_score is not None:
+            if standout_score > 1.0:
+                standout_tag = "Above average"
+            elif abs(standout_score - 1.0) < 1e-6:
+                standout_tag = "At average"
+            else:
+                standout_tag = "Below average"
+            top_standout_display = f"{standout_genre} · {standout_score:.2f} ({standout_tag})"
 
 # Prepare variables for hero card (image, emotion badges, viral styling)
 book_doc = book
@@ -342,11 +359,11 @@ with hero_right:
     )
     st.markdown(stats_html, unsafe_allow_html=True)
 
-    if top_standout:
+    if top_standout_display:
         st.markdown(
             f"<div style=\"margin-top:12px; margin-bottom:24px;\"><span style=\"background:#4F46E522; color:#A5B4FC; padding:6px 14px; "
             f"border-radius:8px; font-size:13px; font-weight:700; border:1px solid #4F46E544; display:inline-block;\">"
-            f"🏆 {top_standout}</span></div>",
+            f"🏆 {top_standout_display}</span></div>",
             unsafe_allow_html=True,
         )
 
@@ -511,51 +528,69 @@ with tab3:
     norm_rating = book.get("normalized_rating", 0)
     reviewer_eng = book.get("reviewer_engagement_score", 0)
     eng_depth = book.get("engagement_depth_score", 0)
-    cols[0].markdown(f"### {fmt(norm_rating)}")
+    cols[0].metric(
+        "Goodreads bias corrected",
+        fmt_percent(norm_rating),
+        help="Normalized rating after correcting for platform bias. Higher means stronger adjusted rating.",
+    )
     try:
         cols[0].progress(min(max(float(norm_rating),0.0),1.0))
     except Exception:
         cols[0].progress(0.0)
-    cols[0].caption("Goodreads bias corrected")
 
-    cols[1].markdown(f"### {fmt(reviewer_eng)}")
+    cols[1].metric(
+        "Review effort level",
+        fmt_percent(reviewer_eng),
+        help="Proxy for how much effort reviewers put in (depth/length). Higher means more engaged reviews.",
+    )
     try:
         cols[1].progress(min(max(float(reviewer_eng),0.0),1.0))
     except Exception:
         cols[1].progress(0.0)
-    cols[1].caption("Review effort level")
 
-    cols[2].markdown(f"### {fmt(eng_depth)}")
+    cols[2].metric(
+        "Master engagement metric",
+        fmt_percent(eng_depth),
+        help="Composite engagement score that summarizes reader involvement. Higher means deeper engagement.",
+    )
     try:
         cols[2].progress(min(max(float(eng_depth),0.0),1.0))
     except Exception:
         cols[2].progress(0.0)
-    cols[2].caption("Master engagement metric")
 
     bcols = st.columns(3)
     ts = book.get("true_satisfaction", 0)
     nt = book.get("normalized_timelessness", 0)
     bf = book.get("normalized_bang_for_buck", 0)
-    bcols[0].markdown(f"### {fmt(ts)}")
+    bcols[0].metric(
+        "Rating × Engagement blend",
+        fmt_percent(ts),
+        help="Blended satisfaction metric combining rating and engagement. Higher means happier, more engaged readers.",
+    )
     try:
         bcols[0].progress(min(max(float(ts),0.0),1.0))
     except Exception:
         bcols[0].progress(0.0)
-    bcols[0].caption("Rating × Engagement blend")
 
-    bcols[1].markdown(f"### {fmt(nt)}")
+    bcols[1].metric(
+        "Staying power index",
+        fmt_percent(nt),
+        help="Normalized measure of long-term appeal. Higher means more durable interest.",
+    )
     try:
         bcols[1].progress(min(max(float(nt),0.0),1.0))
     except Exception:
         bcols[1].progress(0.0)
-    bcols[1].caption("Staying power index")
 
-    bcols[2].markdown(f"### {fmt(bf)}")
+    bcols[2].metric(
+        "Reader ROI",
+        fmt_percent(bf),
+        help="Normalized value/ROI for readers. Higher means better perceived value.",
+    )
     try:
         bcols[2].progress(min(max(float(bf),0.0),1.0))
     except Exception:
         bcols[2].progress(0.0)
-    bcols[2].caption("Reader ROI")
 
 with tab4:
     # Viral hero
@@ -603,6 +638,12 @@ with tab4:
         score = item.get("standout_score", 0)
         color = "#10B981" if score > 1.0 else ("#94A3B8" if abs(score-1.0) < 1e-6 else "#EF4444")
         width = max(0, min(100, (score / 2) * 100))  # normalize to 0-2 scale
+        if score > 1.0:
+            tag_text = "Above avg"
+        elif abs(score - 1.0) < 1e-6:
+            tag_text = "At avg"
+        else:
+            tag_text = "Below avg"
         star = " ⭐" if f"{g}:" in (book.get("top_genre_standout_score") or "") else ""
         shtml += (
             f'<div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">'
@@ -610,7 +651,9 @@ with tab4:
             f'<div style="flex:1; background:#0B1220; border-radius:999px; overflow:hidden;">'
             f'<div style="height:12px; width:{width}%; background:{color};"></div>'
             f'</div>'
-            f'<div style="width:80px; text-align:right; font-family:ui-monospace,monospace;">{score:.2f}{star}</div>'
+            f'<div style="width:150px; text-align:right; font-family:ui-monospace,monospace;">'
+            f'<span style="display:inline-block; margin-right:6px; padding:2px 6px; border-radius:999px; background:{color}22; color:{color}; font-size:10px; font-weight:700;">{tag_text}</span>'
+            f'{score:.2f}{star}</div>'
             f'</div>'
         )
     st.markdown(shtml, unsafe_allow_html=True)
