@@ -616,20 +616,3 @@ with tab4:
     st.markdown(shtml, unsafe_allow_html=True)
 
 
-# Footer AI Insight
-st.markdown("---")
-ins_left, ins_right = st.columns([1, 11])
-with ins_left:
-    st.markdown("### 🧠")
-with ins_right:
-    metrics_map = {
-        "True Satisfaction": book.get("true_satisfaction", 0),
-        "Engagement Depth": book.get("engagement_depth_score", 0),
-        "Viral Potential": book.get("viral_potential_score", 0),
-        "Bang for Buck": book.get("normalized_bang_for_buck", 0),
-    }
-    best = max(metrics_map, key=metrics_map.get)
-    best_val = metrics_map[best]
-    sec_text = secondary.capitalize() if secondary else "N/A"
-    st.markdown(f"**AI Insight for {title}**")
-    st.markdown(f"{title}’s strongest dimension is **{best} ({fmt(best_val)})**. Its emotional signature is **{dominant.capitalize()} + {sec_text}**, paired with **{viral_label}**. Top standout: **{top_standout}**.")
