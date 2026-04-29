@@ -1,0 +1,14 @@
+pandas
+numpy
+nltk
+vaderSentiment
+textblob
+scikit-learn
+gensim
+rake-nltk
+NRCLex
+matplotlib
+pymongo
+python-dotenv
+text2emotion
+seaborn
