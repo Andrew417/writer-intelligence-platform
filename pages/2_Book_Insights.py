@@ -252,13 +252,13 @@ if top_standout:
         except Exception:
             standout_score = None
         if standout_score is not None:
-            if standout_score > 1.0:
-                standout_tag = "Above average"
-            elif abs(standout_score - 1.0) < 1e-6:
-                standout_tag = "At average"
+            delta_pct = (standout_score - 1.0) * 100
+            if abs(delta_pct) < 0.05:
+                top_standout_display = f"{standout_genre} · about average"
+            elif delta_pct > 0:
+                top_standout_display = f"{standout_genre} · {delta_pct:.0f}% above average"
             else:
-                standout_tag = "Below average"
-            top_standout_display = f"{standout_genre} · {standout_score:.2f} ({standout_tag})"
+                top_standout_display = f"{standout_genre} · {abs(delta_pct):.0f}% below average"
 
 # Prepare variables for hero card (image, emotion badges, viral styling)
 book_doc = book
