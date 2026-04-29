@@ -7,6 +7,21 @@ from components.styles import inject_styles
 st.set_page_config(page_title="Book Insights", layout="wide")
 inject_styles()
 
+# Handle direct book deep-links from Dashboard
+query_params = st.query_params
+url_book_id = query_params.get("book_id", None)
+
+# If we have a deep-link, ensure filters don't hide the book
+if url_book_id and "deep_link_handled" not in st.session_state:
+    st.session_state.deep_link_handled = True
+    # Clear any filter session state to show all books
+    for key in list(st.session_state.keys()):
+        if key not in ("deep_link_handled",):
+            try:
+                del st.session_state[key]
+            except Exception:
+                pass
+
 text_primary = "var(--text-primary)"
 text_muted = "var(--text-muted)"
 text_value = "var(--text-value)"
@@ -200,8 +215,30 @@ if len(filtered_df) == 0:
     st.stop()
 
 # Create display labels and selection
+# Create display labels
 book_options = filtered_df.apply(lambda r: f"{r.get('title','Untitled')} — {r.get('author','')}", axis=1).tolist()
-selected_book_label = st.selectbox("Select a book from results", options=book_options, label_visibility="collapsed")
+
+# Check URL for ?book_id=... and pre-select that book
+default_index = 0
+query_params = st.query_params
+url_book_id = query_params.get("book_id", None)
+
+if url_book_id:
+    matching_rows = filtered_df[filtered_df["book_id"].astype(str) == str(url_book_id)]
+    if not matching_rows.empty:
+        # Find the position of this book in the filtered list
+        matched_idx = matching_rows.index[0]
+        try:
+            default_index = filtered_df.index.get_loc(matched_idx)
+        except KeyError:
+            default_index = 0
+
+selected_book_label = st.selectbox(
+    "Select a book from results", 
+    options=book_options, 
+    index=default_index,
+    label_visibility="collapsed"
+)
 selected_index = book_options.index(selected_book_label)
 selected_book_id = filtered_df.iloc[selected_index]["book_id"]
 
