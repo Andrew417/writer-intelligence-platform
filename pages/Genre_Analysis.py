@@ -222,27 +222,3 @@ st.dataframe(
 
 st.caption(f"Showing {len(matrix_df)} genres · Minimum 5 books for statistical validity")
 
-st.markdown("---")
-
-# ═══════════════════════════════════════
-# AI INSIGHT BAR
-# ═══════════════════════════════════════
-
-insight_col1, insight_col2 = st.columns([1, 15])
-with insight_col1:
-    st.markdown("### 🧠")
-with insight_col2:
-    st.markdown(f"**AI Insight for {selected_genre}**")
-    metrics = {
-        "Satisfaction": genre_doc.get("avg_satisfaction", 0),
-        "Engagement": genre_doc.get("avg_engagement_depth", 0),
-        "Value": genre_doc.get("avg_bang_for_buck", 0),
-        "Viral Potential": genre_doc.get("avg_viral_potential", 0),
-        "Timelessness": genre_doc.get("avg_timelessness", 0),
-        "Emotional Complexity": genre_doc.get("avg_emotional_complexity", 0),
-    }
-    best_metric = max(metrics, key=metrics.get)
-    best_value = metrics[best_metric]
-    st.markdown(
-        f"This genre's strongest dimension is **{best_metric}** at **{fmt_percent(best_value)}**. Its dominant emotion is **{dominant_key.capitalize()}**, derived from NLP analysis of reader reviews across **{genre_doc.get('total_books', 0)} books** in the database."
-    )

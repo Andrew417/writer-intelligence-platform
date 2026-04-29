@@ -1,5 +1,5 @@
-streamlit
-pandas
-pymongo
+streamlit>=1.32.0
+pymongo[srv]==4.8.0
+dnspython>=2.6.1
+certifi>=2024.7.4
 python-dotenv
-certifi
