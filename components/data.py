@@ -69,4 +69,13 @@ def get_book_emotions():
 @st.cache_data(ttl=600)
 def get_total_reviews_count():
     db = get_database()
-    return db["reviews"].count_documents({})
+    return db["review_nlp_analysis"].count_documents({})
+
+@st.cache_data(ttl=600)
+def get_global_market_mood():
+    db = get_database()
+    doc = db["market_trends"].find_one(
+        {"trend_type": "global_market_mood"},
+        {"_id": 0}
+    )
+    return doc if doc else {}

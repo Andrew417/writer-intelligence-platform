@@ -2,7 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 from components.styles import inject_styles
-from components.data import get_all_genres, get_all_books, get_total_reviews_count
+from components.data import get_all_genres, get_all_books, get_total_reviews_count, get_global_market_mood
 
 inject_styles()
 
@@ -26,27 +26,72 @@ def format_large_number(num):
 
 formatted_reviews = format_large_number(exact_review_count)
 
-# --- TRUE GLOBAL MARKET MOOD MATH ---
+# --- GLOBAL MARKET MOOD (from pre-computed market_trends collection) ---
+market_mood_doc = get_global_market_mood()
+
+primary_mood = market_mood_doc.get("market_mood", "unknown").lower()
+books_analyzed_mood = market_mood_doc.get("books_analyzed", 0)
+lookback_days = market_mood_doc.get("lookback_days", 0)
+
+# Compute emotion shares from genre averages (consistent math for all bars)
 emotions = ['joy', 'sadness', 'anger', 'fear', 'surprise']
 mean_emotions = {}
-
 for emo in emotions:
     col_name = f'avg_{emo}'
     if col_name in genres_df.columns:
         mean_emotions[emo] = genres_df[col_name].mean()
 
-if mean_emotions:
-    sorted_emotions = sorted(mean_emotions.items(), key=lambda item: item[1], reverse=True)
-    total_emo_score = sum(mean_emotions.values())
+total_emo_score = sum(mean_emotions.values()) if mean_emotions else 0
+
+emotion_pcts = {}
+if total_emo_score > 0:
+    for emo, val in mean_emotions.items():
+        emotion_pcts[emo] = (val / total_emo_score) * 100
+
+# Build all 5 emotion bars with primary highlighted
+emotion_meta = {
+    'joy':      ('bg-amber-400',  'text-amber-700',  '😊'),
+    'sadness':  ('bg-blue-500',   'text-blue-700',   '😢'),
+    'anger':    ('bg-red-500',    'text-red-700',    '😠'),
+    'fear':     ('bg-purple-500', 'text-purple-700', '😨'),
+    'surprise': ('bg-pink-500',   'text-pink-700',   '😲'),
+}
+
+sorted_all_emotions = sorted(emotion_pcts.items(), key=lambda x: x[1], reverse=True)
+
+emotion_bars_html = ""
+for emo_name, emo_pct in sorted_all_emotions:
+    is_primary = (emo_name == primary_mood)
+    bar_color, text_color, emoji = emotion_meta.get(emo_name, ('bg-slate-400', 'text-slate-700', '•'))
     
-    emo1_name = sorted_emotions[0][0].capitalize() if total_emo_score > 0 else "Unknown"
-    emo1_pct = (sorted_emotions[0][1] / total_emo_score) * 100 if total_emo_score > 0 else 0
+    if is_primary:
+        label_class = "font-semibold text-slate-900 text-sm"
+        pct_class = f"text-sm font-mono font-bold {text_color}"
+        bar_height = "h-3"
+        bar_bg = bar_color
+        primary_badge = '<span class="ml-2 text-[9px] font-bold uppercase tracking-wider text-white bg-primary px-1.5 py-0.5 rounded">⬆ TRENDING</span>'
+    else:
+        label_class = "text-sm text-slate-600"
+        pct_class = "text-sm font-mono text-slate-500"
+        bar_height = "h-2"
+        bar_bg = "bg-slate-300"
+        primary_badge = ""
     
-    emo2_name = sorted_emotions[1][0].capitalize() if total_emo_score > 0 else "Unknown"
-    emo2_pct = (sorted_emotions[1][1] / total_emo_score) * 100 if total_emo_score > 0 else 0
-else:
-    emo1_name, emo1_pct = "Data Missing", 0
-    emo2_name, emo2_pct = "Data Missing", 0
+    emotion_bars_html += f"""
+        <div>
+            <div class="flex justify-between items-center mb-1.5">
+                <span class="{label_class} flex items-center gap-2">
+                    <span>{emoji}</span> {emo_name.capitalize()} {primary_badge}
+                </span>
+                <span class="{pct_class}">{emo_pct:.1f}%</span>
+            </div>
+            <div class="{bar_height} bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full {bar_bg} rounded-full transition-all duration-500" style="width: {emo_pct}%"></div>
+            </div>
+        </div>
+    """
+
+primary_mood_display = primary_mood.capitalize()
 
 def build_leaderboard_html(df, sort_col, badge_text, badge_color_class, icon):
     html = ""
@@ -104,7 +149,7 @@ html_ui = f"""
                     <div class="flex justify-between items-start mb-4">
                         <div class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><span class="material-symbols-outlined">forum</span></div>
                     </div>
-                    <p class="text-text-muted text-xs uppercase tracking-wider font-semibold">Total Reader Reviews</p>
+                    <p class="text-text-muted text-xs uppercase tracking-wider font-semibold">Reviews Analyzed</p>
                     <h3 class="text-3xl font-bold font-mono mt-1">{formatted_reviews}</h3>
                 </div>
                 <div class="bg-white p-6 rounded-xl border border-border shadow-sm">
@@ -117,33 +162,25 @@ html_ui = f"""
             </div>
 
             <div class="grid grid-cols-1 gap-5 mb-8">
-                <div class="bg-white rounded-xl border border-border shadow-sm p-6 relative overflow-hidden group">
-                    <div class="flex justify-between items-center mb-6">
+                <div class="bg-white rounded-xl border border-border shadow-sm p-6 relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-6">
                         <div>
-                            <h4 class="font-semibold text-lg">Current Market Mood</h4>
-                            <p class="text-xs text-text-muted">Primary sentiment drivers across all tracked genres</p>
+                        <div class="flex items-center gap-3 mb-1">
+    <h4 class="font-semibold text-lg">Sentiment Landscape</h4>
+    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-wide">
+        <span class="material-symbols-outlined text-[14px]">trending_up</span>
+        Trending: {primary_mood_display}
+    </span>
+</div>
+<p class="text-xs text-text-muted">
+    📊 Bars show overall emotion distribution across all 98 genres &nbsp;•&nbsp; 
+    🎯 <strong>{primary_mood_display}</strong> is the rising market mood from {books_analyzed_mood} recent books ({lookback_days} days)
+</p>
                         </div>
-                        <span class="material-symbols-outlined text-text-faint group-hover:text-primary transition-colors">trending_up</span>
+                        <span class="material-symbols-outlined text-text-faint">insights</span>
                     </div>
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="flex-1">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="font-medium text-slate-700">{emo1_name}</span>
-                                    <span class="text-sm font-mono font-bold text-primary">{emo1_pct:.0f}%</span>
-                                </div>
-                                <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: {emo1_pct}%"></div></div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="flex-1">
-                                <div class="flex justify-between items-center mb-2 text-text-muted">
-                                    <span class="text-sm">{emo2_name}</span>
-                                    <span class="text-sm font-mono">{emo2_pct:.0f}%</span>
-                                </div>
-                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-slate-300 rounded-full" style="width: {emo2_pct}%"></div></div>
-                            </div>
-                        </div>
+                    <div class="space-y-4">
+                        {emotion_bars_html}
                     </div>
                 </div>
             </div>
