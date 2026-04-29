@@ -8,7 +8,7 @@ pages = [
 	st.Page("pages/Dashboard.py", title="Dashboard", icon="📊", default=True),
 	st.Page("pages/2_Book_Insights.py", title="Book Insights", icon="📘"),
 	st.Page("pages/Genre_Analysis.py", title="Genre Analysis", icon="🧭"),
-	st.Page("pages/Market_Analysis.py", title="Market Analysis", icon="🧭"),
+	st.Page("pages/Market_analysis.py", title="Market Analysis", icon="🧭"),
 ]
 
 navigation = st.navigation(pages)
