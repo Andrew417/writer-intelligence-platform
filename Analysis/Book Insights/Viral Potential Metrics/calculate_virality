@@ -1,0 +1,143 @@
+from pymongo import MongoClient
+import pandas as pd
+import numpy as np
+
+# Connect to MongoDB and open the books database
+client = MongoClient("mongodb+srv://karammaria0_db_user:16elMW56jalztyiA@cluster0.s9vsxdk.mongodb.net/")
+db = client["books_db"]
+
+print("Connected to MongoDB successfully")
+
+# Load the books collection into a DataFrame
+books = pd.DataFrame(list(db.books.find()))
+
+print("Books loaded successfully")
+print(books.head())
+
+# Load the emotion summary data
+emotion_summary = pd.DataFrame(
+    list(db.book_emotion_summary.find())
+)
+
+print("Book emotion summary loaded successfully")
+print(emotion_summary.head())
+
+# Keep only the fields needed for the virality calculation
+books_needed = books[[
+    "book_id",
+    "title",
+    "author",
+    "rating_count",
+    "want_to_read_count",
+    "engagement_depth_score",
+    "normalized_review_conversion"
+]]
+
+emotion_needed = emotion_summary[[
+    "book_id",
+    "avg_emotion_intensity",
+    "normalized_sentiment_strength"
+]]
+
+# Make sure numeric fields are numbers before merging
+numeric_columns = [
+    "rating_count",
+    "want_to_read_count",
+    "engagement_depth_score",
+    "normalized_review_conversion",
+    "avg_emotion_intensity",
+    "normalized_sentiment_strength"
+]
+
+for col in numeric_columns:
+    if col in books_needed.columns:
+        books_needed[col] = pd.to_numeric(
+            books_needed[col],
+            errors="coerce"
+        )
+
+    if col in emotion_needed.columns:
+        emotion_needed[col] = pd.to_numeric(
+            emotion_needed[col],
+            errors="coerce"
+        )
+
+# Merge the book and emotion data on book_id
+merged = pd.merge(
+    books_needed,
+    emotion_needed,
+    on="book_id",
+    how="inner"
+)
+
+print("Collections merged successfully")
+print(merged.head())
+
+# Build demand pressure from want-to-read interest and ratings
+merged["demand_pressure"] = (
+    merged["want_to_read_count"] /
+    merged["rating_count"].replace(0, np.nan)
+)
+
+# Replace infinity / NaN and normalize the values
+merged["demand_pressure"] = merged[
+    "demand_pressure"
+].fillna(0)
+merged["normalized_demand_pressure"] = merged["demand_pressure"].rank(pct=True)
+
+print("Demand pressure normalized using percentile ranking")
+print(f"Normalized demand pressure - Min: {merged['normalized_demand_pressure'].min():.3f}, Max: {merged['normalized_demand_pressure'].max():.3f}, Mean: {merged['normalized_demand_pressure'].mean():.3f}")
+
+# Combine the metrics into a single viral potential score
+merged["viral_potential_score"] = (
+    (merged["engagement_depth_score"] * 0.35) +
+    (merged["normalized_review_conversion"] * 0.25) +
+    (merged["avg_emotion_intensity"] * 0.05) +
+    (merged["normalized_sentiment_strength"] * 0.15) +
+    (merged["normalized_demand_pressure"] * 0.20)
+)
+
+# Use percentile breakpoints to assign viral labels
+high_threshold = merged["viral_potential_score"].quantile(0.90)  # Top 10%
+moderate_threshold = merged["viral_potential_score"].quantile(0.50)  # Top 50%
+
+print(f"\nDynamic thresholds:")
+print(f"  High Viral Potential: ≥ {high_threshold:.3f} (Top 10%)")
+print(f"  Moderate Viral Potential: ≥ {moderate_threshold:.3f} (Top 50%)")
+print(f"  Low Viral Potential: < {moderate_threshold:.3f}")
+
+def get_viral_label(score):
+    if score >= high_threshold:
+        return "High Viral Potential"
+    elif score >= moderate_threshold:
+        return "Moderate Viral Potential"
+    else:
+        return "Low Viral Potential"
+
+merged["viral_label"] = merged["viral_potential_score"].apply(get_viral_label)
+
+# Select the final output fields for export
+final_output = merged[[
+    "book_id",
+    "title",
+    "author",
+    "viral_potential_score",
+    "viral_label"
+]]
+
+# Export the results to CSV
+final_output.to_csv("viral_potential_output.csv", index=False)
+print("\nCSV file created: viral_potential_output.csv")
+
+# Save the final results into MongoDB
+records = final_output.to_dict("records")
+
+if len(records) > 0:
+    db.viral_proxy_metrics.delete_many({})
+    db.viral_proxy_metrics.insert_many(records)
+    print(f"MongoDB collection 'viral_proxy_metrics' updated with {len(records)} records")
+else:
+    print("No records found. Nothing inserted.")
+
+print("\nFinal Viral Potential Output:")
+print(final_output.head())
