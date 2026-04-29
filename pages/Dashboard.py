@@ -29,69 +29,8 @@ formatted_reviews = format_large_number(exact_review_count)
 # --- GLOBAL MARKET MOOD (from pre-computed market_trends collection) ---
 market_mood_doc = get_global_market_mood()
 
-primary_mood = market_mood_doc.get("market_mood", "unknown").lower()
-books_analyzed_mood = market_mood_doc.get("books_analyzed", 0)
-lookback_days = market_mood_doc.get("lookback_days", 0)
+primary_mood = market_mood_doc.get("market_mood", "unknown").capitalize()
 
-# Compute emotion shares from genre averages (consistent math for all bars)
-emotions = ['joy', 'sadness', 'anger', 'fear', 'surprise']
-mean_emotions = {}
-for emo in emotions:
-    col_name = f'avg_{emo}'
-    if col_name in genres_df.columns:
-        mean_emotions[emo] = genres_df[col_name].mean()
-
-total_emo_score = sum(mean_emotions.values()) if mean_emotions else 0
-
-emotion_pcts = {}
-if total_emo_score > 0:
-    for emo, val in mean_emotions.items():
-        emotion_pcts[emo] = (val / total_emo_score) * 100
-
-# Build all 5 emotion bars with primary highlighted
-emotion_meta = {
-    'joy':      ('bg-amber-400',  'text-amber-700',  '😊'),
-    'sadness':  ('bg-blue-500',   'text-blue-700',   '😢'),
-    'anger':    ('bg-red-500',    'text-red-700',    '😠'),
-    'fear':     ('bg-purple-500', 'text-purple-700', '😨'),
-    'surprise': ('bg-pink-500',   'text-pink-700',   '😲'),
-}
-
-sorted_all_emotions = sorted(emotion_pcts.items(), key=lambda x: x[1], reverse=True)
-
-emotion_bars_html = ""
-for emo_name, emo_pct in sorted_all_emotions:
-    is_primary = (emo_name == primary_mood)
-    bar_color, text_color, emoji = emotion_meta.get(emo_name, ('bg-slate-400', 'text-slate-700', '•'))
-    
-    if is_primary:
-        label_class = "font-semibold text-slate-900 text-sm"
-        pct_class = f"text-sm font-mono font-bold {text_color}"
-        bar_height = "h-3"
-        bar_bg = bar_color
-        primary_badge = '<span class="ml-2 text-[9px] font-bold uppercase tracking-wider text-white bg-primary px-1.5 py-0.5 rounded">⬆ TRENDING</span>'
-    else:
-        label_class = "text-sm text-slate-600"
-        pct_class = "text-sm font-mono text-slate-500"
-        bar_height = "h-2"
-        bar_bg = "bg-slate-300"
-        primary_badge = ""
-    
-    emotion_bars_html += f"""
-        <div>
-            <div class="flex justify-between items-center mb-1.5">
-                <span class="{label_class} flex items-center gap-2">
-                    <span>{emoji}</span> {emo_name.capitalize()} {primary_badge}
-                </span>
-                <span class="{pct_class}">{emo_pct:.1f}%</span>
-            </div>
-            <div class="{bar_height} bg-slate-100 rounded-full overflow-hidden">
-                <div class="h-full {bar_bg} rounded-full transition-all duration-500" style="width: {emo_pct}%"></div>
-            </div>
-        </div>
-    """
-
-primary_mood_display = primary_mood.capitalize()
 
 def build_leaderboard_html(df, sort_col, badge_text, badge_color_class, icon):
     html = ""
@@ -132,10 +71,21 @@ html_ui = f"""
     <main class="w-full pb-10">
         <div class="max-w-[1280px] mx-auto">
             
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-text-primary">Global Dashboard</h2>
-                <p class="text-text-muted mt-1">Real-time literary performance and reader sentiment indices.</p>
-            </div>
+            <div class="mb-8 flex justify-between items-start flex-wrap gap-3">
+    <div>
+        <h2 class="text-3xl font-bold text-text-primary">Global Dashboard</h2>
+        <p class="text-text-muted mt-1">Real-time literary performance and reader sentiment indices.</p>
+    </div>
+    <div class="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-full overflow-hidden backdrop-blur-sm" style="background: linear-gradient(135deg, rgba(53,37,205,0.08) 0%, rgba(124,58,237,0.08) 100%); border: 1px solid rgba(53,37,205,0.2);">
+    <div class="flex items-center justify-center w-7 h-7 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full shadow-lg shadow-indigo-500/30">
+        <span class="material-symbols-outlined text-white text-[16px]">insights</span>
+    </div>
+    <div class="flex items-baseline gap-2">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-500/80">Market Mood</span>
+        <span class="text-base font-extrabold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent">{primary_mood}</span>
+    </div>
+</div>
+</div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                 <div class="bg-white p-6 rounded-xl border border-border shadow-sm">
@@ -160,31 +110,6 @@ html_ui = f"""
                     <h3 class="text-3xl font-bold font-mono mt-1">{genres_tracked}</h3>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 gap-5 mb-8">
-                <div class="bg-white rounded-xl border border-border shadow-sm p-6 relative overflow-hidden">
-                    <div class="flex justify-between items-start mb-6">
-                        <div>
-                        <div class="flex items-center gap-3 mb-1">
-    <h4 class="font-semibold text-lg">Sentiment Landscape</h4>
-    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-wide">
-        <span class="material-symbols-outlined text-[14px]">trending_up</span>
-        Trending: {primary_mood_display}
-    </span>
-</div>
-<p class="text-xs text-text-muted">
-    📊 Bars show overall emotion distribution across all 98 genres &nbsp;•&nbsp; 
-    🎯 <strong>{primary_mood_display}</strong> is the rising market mood from {books_analyzed_mood} recent books ({lookback_days} days)
-</p>
-                        </div>
-                        <span class="material-symbols-outlined text-text-faint">insights</span>
-                    </div>
-                    <div class="space-y-4">
-                        {emotion_bars_html}
-                    </div>
-                </div>
-            </div>
-
             <h2 class="text-xl font-semibold mb-5 flex items-center gap-3">Industry Leaderboards <span class="h-[1px] flex-1 bg-slate-200"></span></h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
