@@ -14,7 +14,16 @@ def get_all_genres():
         "avg_sadness": 1,
         "avg_anger": 1,
         "avg_fear": 1,
-        "avg_surprise": 1
+        "avg_surprise": 1,
+        "avg_satisfaction": 1,
+        "avg_engagement_depth": 1,
+        "avg_emotional_complexity": 1,
+        "avg_sentiment_strength": 1,
+        "avg_bang_for_buck": 1,
+        "avg_viral_potential": 1,
+        "avg_timelessness": 1,
+        "avg_sentiment": 1,
+        "market_risk_index": 1
     })
     return pd.DataFrame(list(cursor))
 
