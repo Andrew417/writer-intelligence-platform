@@ -46,7 +46,8 @@ def get_all_books():
         "days_since_published": 1,  
         "clean_price": 1,           
         "price": 1,                 
-        "engagement_depth_score": 1 
+        "engagement_depth_score": 1,
+        "hidden_gem_flag": 1        
     })
     return pd.DataFrame(list(cursor))
 

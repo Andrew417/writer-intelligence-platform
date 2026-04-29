@@ -1,5 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import numpy as np
 import pandas as pd
 from components.styles import inject_styles
 from components.data import get_all_genres, get_all_books, get_total_reviews_count, get_global_market_mood
@@ -16,6 +17,73 @@ except Exception as e:
 
 total_books = len(books_df) if not books_df.empty else 0
 genres_tracked = len(genres_df) if not genres_df.empty else 0
+
+def build_hidden_gems_html(df):
+    html = ""
+    
+    # --- STEP 1: Filter to only books flagged as hidden gems ---
+    if 'hidden_gem_flag' in df.columns:
+        gems_df = df[df['hidden_gem_flag'] == True].copy()
+    else:
+        gems_df = pd.DataFrame()
+    
+    if gems_df.empty:
+        return '<div class="p-4 text-center text-slate-500 text-sm">No hidden gems found.</div>'
+    
+    # --- STEP 2: Sort by high satisfaction + low rating count ---
+    def compute_score(row):
+        sat = row.get('true_satisfaction', 0) or 0
+        rc = row.get('rating_count', 0) or 0
+        if rc <= 0:
+            return 0
+        # Higher satisfaction × lower popularity = higher gem score
+        popularity_penalty = 1 / np.log10(rc + 10)
+        return sat * popularity_penalty
+    
+    gems_df['gem_rank_score'] = gems_df.apply(compute_score, axis=1)
+    top_4 = gems_df.nlargest(4, 'gem_rank_score')
+    
+    for idx, (_, row) in enumerate(top_4.iterrows(), 1):
+        title = row.get('title', 'Unknown Title')
+        author = row.get('author', 'Unknown Author')
+        satisfaction = row.get('true_satisfaction', 0) or 0
+        rating_count = row.get('rating_count', 0) or 0
+        
+        # Format rating count (1.2K, 543, 12.5K)
+        if rating_count >= 1_000_000:
+            rc_display = f"{rating_count/1_000_000:.1f}M"
+        elif rating_count >= 1_000:
+            rc_display = f"{rating_count/1_000:.1f}K"
+        else:
+            rc_display = f"{int(rating_count)}"
+        
+        html += f"""
+<div class="p-4 hover:bg-slate-50 transition-colors">
+    <div class="flex justify-between items-start mb-2 gap-2">
+        <div class="flex items-start gap-3 flex-1 min-w-0">
+            <span class="flex-shrink-0 inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white text-[11px] font-bold">
+                {idx}
+            </span>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-slate-900 truncate" title="{title}">{title}</p>
+                <p class="text-[11px] text-slate-500 truncate">{author}</p>
+            </div>
+        </div>
+    </div>
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2 text-[11px]">
+                    <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold flex items-center gap-1">
+                        💯 {satisfaction*100:.0f}% satisfied
+                    </span>
+                    <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">
+                        {rc_display} ratings
+                    </span>
+                </div>
+                <span class="material-symbols-outlined text-indigo-600 text-sm">verified</span>
+            </div>
+        </div>
+        """
+    return html
 
 def format_large_number(num):
     if num >= 1_000_000:
@@ -53,8 +121,7 @@ def build_leaderboard_html(df, sort_col, badge_text, badge_color_class, icon):
     return html
 
 trending_html = build_leaderboard_html(books_df, 'viral_potential_score', "Viral Score", "bg-rose-100 text-rose-700", "trending_up")
-hidden_gems_html = build_leaderboard_html(books_df, 'normalized_bang_for_buck', "Value Score", "bg-indigo-100 text-indigo-700", "verified")
-
+hidden_gems_html = build_hidden_gems_html(books_df)
 html_ui = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -134,3 +201,4 @@ html_ui = f"""
 </html>
 """
 components.html(html_ui, height=1000, scrolling=True)
+
