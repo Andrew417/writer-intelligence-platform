@@ -528,33 +528,34 @@ with tab3:
     norm_rating = book.get("normalized_rating", 0)
     reviewer_eng = book.get("reviewer_engagement_score", 0)
     eng_depth = book.get("engagement_depth_score", 0)
+    
     cols[0].metric(
-        "Goodreads bias corrected",
+        "Relative Rating Score",
         fmt_percent(norm_rating),
-        help="Normalized rating after correcting for platform bias. Higher means stronger adjusted rating.",
+        help="A score that shows how this book's rating compares to others in the dataset. Higher values mean the book is rated closer to the highest-rated books in the system.",
     )
     try:
-        cols[0].progress(min(max(float(norm_rating),0.0),1.0))
+        cols[0].progress(min(max(float(norm_rating), 0.0), 1.0))
     except Exception:
         cols[0].progress(0.0)
 
     cols[1].metric(
-        "Review effort level",
+        "Review Detail Level",
         fmt_percent(reviewer_eng),
-        help="Proxy for how much effort reviewers put in (depth/length). Higher means more engaged reviews.",
+        help="Shows how detailed and thoughtful reader reviews are, based on review length and depth. Higher values indicate more engaged and expressive reviewers.",
     )
     try:
-        cols[1].progress(min(max(float(reviewer_eng),0.0),1.0))
+        cols[1].progress(min(max(float(reviewer_eng), 0.0), 1.0))
     except Exception:
         cols[1].progress(0.0)
 
     cols[2].metric(
-        "Master engagement metric",
+        "Reader Engagement Level",
         fmt_percent(eng_depth),
-        help="Composite engagement score that summarizes reader involvement. Higher means deeper engagement.",
+        help="Measures overall reader interaction with the book, including reading activity and review participation. Higher values indicate stronger audience involvement.",
     )
     try:
-        cols[2].progress(min(max(float(eng_depth),0.0),1.0))
+        cols[2].progress(min(max(float(eng_depth), 0.0), 1.0))
     except Exception:
         cols[2].progress(0.0)
 
@@ -562,33 +563,34 @@ with tab3:
     ts = book.get("true_satisfaction", 0)
     nt = book.get("normalized_timelessness", 0)
     bf = book.get("normalized_bang_for_buck", 0)
+    
     bcols[0].metric(
-        "Rating × Engagement blend",
+        "Reader Satisfaction Score",
         fmt_percent(ts),
-        help="Blended satisfaction metric combining rating and engagement. Higher means happier, more engaged readers.",
+        help="Combines reader ratings with engagement levels to reflect how satisfied and emotionally connected readers are with the book. Higher values indicate stronger overall satisfaction.",
     )
     try:
-        bcols[0].progress(min(max(float(ts),0.0),1.0))
+        bcols[0].progress(min(max(float(ts), 0.0), 1.0))
     except Exception:
         bcols[0].progress(0.0)
 
     bcols[1].metric(
-        "Staying power index",
+        "Long-Term Popularity",
         fmt_percent(nt),
-        help="Normalized measure of long-term appeal. Higher means more durable interest.",
+        help="Indicates how well the book maintains interest over time. Higher values mean the book continues to stay relevant and widely appreciated.",
     )
     try:
-        bcols[1].progress(min(max(float(nt),0.0),1.0))
+        bcols[1].progress(min(max(float(nt), 0.0), 1.0))
     except Exception:
         bcols[1].progress(0.0)
 
     bcols[2].metric(
-        "Reader ROI",
+        "Value for Money",
         fmt_percent(bf),
-        help="Normalized value/ROI for readers. Higher means better perceived value.",
+        help="Represents how much value readers feel they get from the book compared to its effort, time, or cost. Higher values indicate better perceived value.",
     )
     try:
-        bcols[2].progress(min(max(float(bf),0.0),1.0))
+        bcols[2].progress(min(max(float(bf), 0.0), 1.0))
     except Exception:
         bcols[2].progress(0.0)
 
