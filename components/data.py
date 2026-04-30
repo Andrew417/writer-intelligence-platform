@@ -10,12 +10,20 @@ def get_all_genres():
         "genres": 1,
         "total_books": 1,
         "genre_dominant_emotion": 1,
-        "market_risk_index": 1,
         "avg_joy": 1,
         "avg_sadness": 1,
         "avg_anger": 1,
         "avg_fear": 1,
-        "avg_surprise": 1
+        "avg_surprise": 1,
+        "avg_satisfaction": 1,
+        "avg_engagement_depth": 1,
+        "avg_emotional_complexity": 1,
+        "avg_sentiment_strength": 1,
+        "avg_bang_for_buck": 1,
+        "avg_viral_potential": 1,
+        "avg_timelessness": 1,
+        "avg_sentiment": 1,
+        "market_risk_index": 1
     })
     return pd.DataFrame(list(cursor))
 
@@ -48,8 +56,7 @@ def get_all_books():
         "clean_price": 1,           
         "price": 1,                 
         "engagement_depth_score": 1,
-        "hidden_gem_flag": 1,       
-        "viral_breakout_flag": 1    
+        "hidden_gem_flag": 1        
     })
     return pd.DataFrame(list(cursor))
 
@@ -72,11 +79,13 @@ def get_book_emotions():
 @st.cache_data(ttl=600)
 def get_total_reviews_count():
     db = get_database()
-    return db["reviews"].count_documents({})
+    return db["review_nlp_analysis"].count_documents({})
 
 @st.cache_data(ttl=600)
-def get_market_trends():
-    """Fetch the pre-calculated market trends (pricing and mood)."""
+def get_global_market_mood():
     db = get_database()
-    cursor = db["market_trends"].find({})
-    return pd.DataFrame(list(cursor))
+    doc = db["market_trends"].find_one(
+        {"trend_type": "global_market_mood"},
+        {"_id": 0}
+    )
+    return doc if doc else {}
