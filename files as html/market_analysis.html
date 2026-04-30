@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {{
+            theme: {{
+                extend: {{
+                    colors: {{
+                        "primary": "#3525cd",
+                        "border": "#E2E8F0",
+                        "text-primary": "#0F172A",
+                        "text-muted": "#64748B",
+                        "text-faint": "#94A3B8"
+                    }}
+                }}
+            }}
+        }}
+    </script>
+    <style>
+        body {{ background: transparent; font-family: 'Inter', sans-serif; }}
+        .material-symbols-outlined {{ font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }}
+    </style>
+</head>
+<body class="antialiased text-text-primary">
+<main class="w-full pb-10">
+    <div class="max-w-[1280px] mx-auto">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-text-primary">Strategic Market Trends</h2>
+            <p class="text-text-muted mt-1">Macro-economic intelligence and publishing industry Zeitgeist.</p>
+        </div>
+
+        <!-- Top row: Current Zeitgeist + Pricing Sweet Spot -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <div class="bg-gradient-to-br from-indigo-900 to-primary p-6 rounded-xl shadow-md text-white relative overflow-hidden flex flex-col justify-center">
+                <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-white/10">psychology</span>
+                <h4 class="font-semibold text-lg text-indigo-100 mb-1">Current Zeitgeist</h4>
+                <p class="text-xs text-indigo-200/80 mb-6">Secondary emotion driving recent market acquisitions</p>
+                <h2 class="text-5xl font-black tracking-tight">{market_mood}</h2>
+            </div>
+
+            <div class="bg-white rounded-xl border border-border shadow-sm p-6 flex flex-col justify-center">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="material-symbols-outlined text-emerald-500 text-xl">monetization_on</span>
+                    <h4 class="font-semibold text-lg">Pricing Sweet Spot</h4>
+                </div>
+                <p class="text-xs text-text-muted mb-5">Maximized psychological satisfaction relative to cost</p>
+                <div class="flex items-end gap-3">
+                    <h2 class="text-4xl font-bold font-mono text-slate-800">{best_bracket_name}</h2>
+                    <div class="pb-1">
+                        <span class="text-sm font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">Score: {best_bracket_score:.2f}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle row: Hidden Gems + Viral Breakouts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+            <div class="bg-white p-6 rounded-xl border border-border shadow-sm border-l-4 border-l-indigo-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h4 class="font-semibold text-slate-800 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-indigo-500">radar</span> Hidden Gems
+                        </h4>
+                        <p class="text-xs text-text-muted mt-1">Phenomenal ratings, undiscovered by mainstream</p>
+                    </div>
+                    <h3 class="text-3xl font-bold font-mono text-indigo-600">{hidden_gems_count}</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-border shadow-sm border-l-4 border-l-rose-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h4 class="font-semibold text-slate-800 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-rose-500">rocket_launch</span> Viral Breakouts
+                        </h4>
+                        <p class="text-xs text-text-muted mt-1">Exploding in real-time cultural relevance</p>
+                    </div>
+                    <h3 class="text-3xl font-bold font-mono text-rose-600">{viral_breakouts_count}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom row: Market Risk Index -->
+        <div class="bg-white rounded-xl border border-border shadow-sm p-6">
+            <div class="mb-6">
+                <h4 class="font-semibold text-lg">Market Risk Index</h4>
+                <p class="text-xs text-text-muted">Financial volatility across genre satisfaction</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h5 class="text-sm font-bold text-rose-700 mb-3 flex items-center gap-1 uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-sm">warning</span> High Risk (Polarizing)
+                    </h5>
+                    {high_risk_html}
+                </div>
+                <div>
+                    <h5 class="text-sm font-bold text-emerald-700 mb-3 flex items-center gap-1 uppercase tracking-wider">
+                        <span class="material-symbols-outlined text-sm">verified_user</span> Low Risk (Consistent)
+                    </h5>
+                    {low_risk_html}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
